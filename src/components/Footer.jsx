@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Sparkles, Shield, ArrowUp } from 'lucide-react';
+import { Sparkles, Shield, ArrowUp, Mail } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onOpenNewsletter }) {
   const [activeModal, setActiveModal] = useState(null); // 'terms' | 'privacy' | 'refund' | null
 
   const scrollToTop = () => {
@@ -26,6 +26,15 @@ export default function Footer() {
             <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
               과장 없는 정직한 안내와 1:1 맞춤 소통으로 시작하는 나만의 AI 지식 비즈니스 본진. 당신의 소중한 경험을 세상에 통하는 자산으로 바꿉니다.
             </p>
+            <div className="pt-2">
+              <button
+                onClick={onOpenNewsletter}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-amber-300 font-bold border border-white/20 transition-all"
+              >
+                <Mail className="w-4 h-4" />
+                <span>주디AI 시크릿 뉴스레터 무료 구독하기</span>
+              </button>
+            </div>
           </div>
 
           <div className="md:col-span-7 flex flex-col sm:flex-row justify-between gap-6">
@@ -35,7 +44,11 @@ export default function Footer() {
                 <li><a href="#philosophy" className="hover:text-white transition-colors">철학과 약속</a></li>
                 <li><a href="#programs" className="hover:text-white transition-colors">VOD & 코칭 프로그램</a></li>
                 <li><a href="#reviews" className="hover:text-white transition-colors">수강생 후기</a></li>
-                <li><a href="#free-guide" className="hover:text-white transition-colors">무료 스타터킷 다운로드</a></li>
+                <li>
+                  <button onClick={onOpenNewsletter} className="text-amber-400 hover:text-amber-300 font-bold transition-colors">
+                    뉴스레터 구독 신청
+                  </button>
+                </li>
                 <li><a href="#faq" className="hover:text-white transition-colors">자주 묻는 질문</a></li>
               </ul>
             </div>
@@ -134,4 +147,3 @@ export default function Footer() {
     </footer>
   );
 }
-
