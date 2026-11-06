@@ -85,19 +85,19 @@ export default function Header({
           {/* Right Action Buttons: 관리자모드 대신 [로그인], [회원가입] 버튼 배치 */}
           <div className="hidden md:flex items-center gap-2.5">
             
-            {/* 1:1 상담 신청 버튼 */}
+            {/* 교육상담신청 버튼 */}
             {viewMode === 'home' && (
               <button
                 type="button"
                 onClick={onOpenConsulting}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-all ${
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition-all ${
                   scrolled
                     ? 'bg-judiaistudio-royalBlue text-white hover:bg-judiaistudio-royalBlueHover'
                     : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/25'
                 } hover:-translate-y-0.5 active:translate-y-0`}
               >
                 <MessageSquare className="w-3.5 h-3.5 text-judiaistudio-gold" />
-                <span>1:1 상담 신청</span>
+                <span>교육상담신청</span>
               </button>
             )}
 
@@ -325,10 +325,10 @@ export default function Header({
                 setMobileMenuOpen(false);
                 onOpenConsulting();
               }}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-judiaistudio-royalBlue text-white font-semibold shadow-md text-xs"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-judiaistudio-royalBlue text-white font-bold shadow-md text-xs"
             >
               <MessageSquare className="w-4 h-4 text-judiaistudio-gold" />
-              <span>1:1 상담 신청하기</span>
+              <span>교육상담신청하기</span>
             </button>
 
             {currentUser?.role === 'admin' && (

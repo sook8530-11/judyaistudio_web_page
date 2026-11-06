@@ -379,3 +379,4 @@ export default function AuthModal({ isOpen, initialTab = 'login', onClose, onLog
     </div>
   );
 }
+

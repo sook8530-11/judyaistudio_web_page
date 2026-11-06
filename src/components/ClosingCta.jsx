@@ -36,7 +36,7 @@ export default function ClosingCta({ onOpenConsulting }) {
             className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-judiaistudio-royalBlue text-white font-bold text-lg shadow-xl shadow-judiaistudio-royalBlue/30 hover:bg-judiaistudio-royalBlueHover hover:-translate-y-0.5 active:translate-y-0 transition-all"
           >
             <MessageSquare className="w-5 h-5 text-judiaistudio-gold" />
-            <span>주디 대표에게 "상담받고 싶어요" 메시지 보내기</span>
+            <span>주디 대표에게 교육상담신청하기</span>
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>

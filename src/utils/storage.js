@@ -2,6 +2,41 @@
 
 const PRODUCTS_KEY = 'judiaistudio_products';
 const SUBSCRIBERS_KEY = 'judiaistudio_subscribers';
+const CONSULTING_KEY = 'judiaistudio_consulting_requests';
+
+// 초기 교육 상담 신청 샘플 데이터
+const DEFAULT_CONSULTING_REQUESTS = [
+  {
+    id: 'req-1',
+    name: '최현우',
+    organization: '(주)퓨처테크 HR팀',
+    phone: '010-5821-3912',
+    email: 'hw.choi@futuretech.io',
+    category: '기업 교육',
+    target: '기업 임직원 / 실무진',
+    headcount: '21 ~ 50명 (대규모 워크숍)',
+    schedulePreference: '구체적 날짜 지정',
+    preferredDate: '2026-11-20',
+    preferredTime: '평일 오후 (14:00~18:00)',
+    message: '사내 마케팅/기획팀 대상 실전 생성형 AI 활용 지식 자동화 4시간 집중 워크숍 제안서를 받아보고 싶습니다.',
+    createdAt: '2026-11-05 15:30'
+  },
+  {
+    id: 'req-2',
+    name: '정유진',
+    organization: '개인 (퇴직 준비)',
+    phone: '010-8912-4410',
+    email: 'yujin.jung@gmail.com',
+    category: '1:1 코칭',
+    target: '전문직 / 시니어 / 퇴직 예정자',
+    headcount: '1명 (1:1 개인)',
+    schedulePreference: '빠른 일정 협의',
+    preferredDate: '협의 가능',
+    preferredTime: '주말 종일',
+    message: '20년간 쌓은 인사 컨설팅 경험을 AI 기반 전자책 및 VOD 강좌로 패키징하는 1:1 코칭을 희망합니다.',
+    createdAt: '2026-11-06 11:20'
+  }
+];
 
 // 초기 기본 상품 데이터 (기획서 기반)
 const DEFAULT_PRODUCTS = [
@@ -158,6 +193,49 @@ export function deleteSubscriber(id) {
   const current = getStoredSubscribers();
   const updated = current.filter(item => item.id !== id);
   localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(updated));
+}
+
+// 2-2. 교육상담신청 (기업, 개인, 특강, 캠프, 코칭, 컨설팅) 데이터 관리
+export function getStoredConsultingRequests() {
+  try {
+    const raw = localStorage.getItem(CONSULTING_KEY);
+    if (!raw) {
+      localStorage.setItem(CONSULTING_KEY, JSON.stringify(DEFAULT_CONSULTING_REQUESTS));
+      return DEFAULT_CONSULTING_REQUESTS;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('getStoredConsultingRequests error:', e);
+    return DEFAULT_CONSULTING_REQUESTS;
+  }
+}
+
+export function addConsultingRequest(data) {
+  const current = getStoredConsultingRequests();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  
+  const newReq = {
+    id: 'req-' + Date.now(),
+    ...data,
+    createdAt: dateStr
+  };
+  const updated = [newReq, ...current];
+  localStorage.setItem(CONSULTING_KEY, JSON.stringify(updated));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('judiaistudio_consulting_updated', { detail: updated }));
+  }
+  return newReq;
+}
+
+export function deleteConsultingRequest(id) {
+  const current = getStoredConsultingRequests();
+  const updated = current.filter(item => item.id !== id);
+  localStorage.setItem(CONSULTING_KEY, JSON.stringify(updated));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('judiaistudio_consulting_updated', { detail: updated }));
+  }
+  return updated;
 }
 
 // 3. HTML5 Canvas 초경량 이미지 압축 엔진 (최대 600px, JPEG 70% 압축 -> 30KB~50KB 내외 Base64)

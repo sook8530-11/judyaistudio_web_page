@@ -62,7 +62,7 @@ export default function ProductDetailView({
             onClick={onOpenConsulting}
             className="px-4 sm:px-5 py-2 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
           >
-            {product.price === 0 ? '무료 다운로드 신청' : '1:1 수강·구매 상담'}
+            {product.price === 0 ? '무료 다운로드 신청' : '교육상담신청'}
           </button>
         </div>
       </header>
@@ -212,14 +212,14 @@ export default function ProductDetailView({
               "과장 없는 1:1 맞춤 소통으로 함께합니다"
             </h4>
             <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-              본 과정에 대해 더 궁금한 점이 있으시거나 내 상황에 맞는지 진단받고 싶으시다면, 언제든 부담 없이 1:1 상담을 요청해 주세요.
+              본 과정에 대해 더 궁금한 점이 있으시거나 내 상황에 맞는지 진단받고 싶으시다면, 언제든 부담 없이 교육상담을 요청해 주세요.
             </p>
             <button
               onClick={onOpenConsulting}
               className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white text-xs font-bold shadow-md transition-all"
             >
               <MessageSquare className="w-4 h-4 text-judiaistudio-gold" />
-              <span>1:1 상담 신청하기</span>
+              <span>교육상담신청하기</span>
             </button>
           </div>
 

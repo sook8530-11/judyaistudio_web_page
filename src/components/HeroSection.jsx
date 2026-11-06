@@ -80,9 +80,9 @@ export default function HeroSection({ onOpenConsulting }) {
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
               onClick={onOpenConsulting}
-              className="flex items-center gap-2 px-7 py-3.5 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full text-white text-sm font-semibold shadow-xl transition-all duration-300 group hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 px-7 py-3.5 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full text-white text-sm font-bold shadow-xl transition-all duration-300 group hover:scale-105 active:scale-95"
             >
-              <span>1:1 상담 신청하기</span>
+              <span>교육상담신청</span>
               <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-emerald-300" />
             </button>
 

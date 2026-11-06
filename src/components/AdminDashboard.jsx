@@ -7,16 +7,18 @@ import {
 } from 'lucide-react';
 import { 
   getStoredProducts, addProduct, updateProduct, deleteProduct, 
-  getStoredSubscribers, deleteSubscriber, compressImage, resetDefaultProducts 
+  getStoredSubscribers, deleteSubscriber, compressImage, resetDefaultProducts,
+  getStoredConsultingRequests, deleteConsultingRequest 
 } from '../utils/storage';
 import BlogEditor from './BlogEditor';
 import ProductEditModal from './ProductEditModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 export default function AdminDashboard({ onBackToHome, onSelectProductView, onLogout }) {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers'
+  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers' | 'consulting'
   const [products, setProducts] = useState(getStoredProducts);
   const [subscribers, setSubscribers] = useState(getStoredSubscribers);
+  const [consultingRequests, setConsultingRequests] = useState(getStoredConsultingRequests);
 
   // 모달 상태: 수정 모달 & 커스텀 삭제 확인 모달
   const [editingProduct, setEditingProduct] = useState(null);
@@ -35,11 +37,14 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     const syncData = () => {
       setProducts(getStoredProducts());
       setSubscribers(getStoredSubscribers());
+      setConsultingRequests(getStoredConsultingRequests());
     };
     window.addEventListener('judiaistudio_products_updated', syncData);
+    window.addEventListener('judiaistudio_consulting_updated', syncData);
     window.addEventListener('storage', syncData);
     return () => {
       window.removeEventListener('judiaistudio_products_updated', syncData);
+      window.removeEventListener('judiaistudio_consulting_updated', syncData);
       window.removeEventListener('storage', syncData);
     };
   }, []);
@@ -184,6 +189,37 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     showToast('📥 구독자 CSV 파일이 다운로드되었습니다.');
   };
 
+  // 8. 교육상담신청 내역 삭제
+  const handleDeleteConsulting = (id) => {
+    if (window.confirm('해당 교육상담신청 내역을 삭제하시겠습니까?')) {
+      deleteConsultingRequest(id);
+      setConsultingRequests(getStoredConsultingRequests());
+      showToast('교육상담신청 내역이 삭제되었습니다.');
+    }
+  };
+
+  // 9. 교육상담신청 내역 CSV 다운로드
+  const exportConsultingCSV = () => {
+    if (consultingRequests.length === 0) {
+      alert('내보낼 교육상담신청 내역이 없습니다.');
+      return;
+    }
+    const headers = ['ID,성함,기업/기관명,연락처,이메일,교육분야,교육대상,예상인원,희망일정,선호시간,문의내용,신청일시'];
+    const rows = consultingRequests.map(r => 
+      `"${r.id}","${r.name}","${r.organization || ''}","${r.phone}","${r.email}","${r.category}","${r.target}","${r.headcount}","${r.preferredDate}","${r.preferredTime}","${(r.message || '').replace(/"/g, '""')}","${r.createdAt}"`
+    );
+    const csvContent = '\uFEFF' + [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `judiaistudio_consulting_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('📥 교육상담신청 CSV 파일이 다운로드되었습니다.');
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-32">
       
@@ -273,7 +309,20 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
               }`}
             >
               <Users className="w-4 h-4 text-purple-300" />
-              <span>뉴스레터 구독자 관리 ({subscribers.length})</span>
+              <span>뉴스레터 구독자 ({subscribers.length})</span>
+            </button>
+
+            {/* 탭 4: 교육상담신청 내역 */}
+            <button
+              onClick={() => setActiveTab('consulting')}
+              className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'consulting'
+                  ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/30 scale-105'
+                  : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <MessageSquare className="w-4 h-4 text-amber-300" />
+              <span>교육상담신청 접수 내역 ({consultingRequests.length})</span>
             </button>
           </div>
 
@@ -743,6 +792,101 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
                         <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => handleDeleteSubscriber(sub.id)}
+                            className="p-1.5 rounded-lg bg-red-600/70 hover:bg-red-600 text-white transition-colors"
+                            title="삭제"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ===================== TAB 4: 교육상담신청 접수 내역 관리 ===================== */}
+        {activeTab === 'consulting' && (
+          <div className="bg-slate-800/80 rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-xl space-y-6 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-700 pb-4">
+              <div>
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-amber-400" />
+                  <span>맞춤형 교육상담신청 접수 목록 ({consultingRequests.length}건)</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  기업 출강, 특강, AI 캠프, 1:1 코칭, 컨설팅 등 고객이 제출한 교육상담 데이터가 실시간으로 보관됩니다.
+                </p>
+              </div>
+
+              {/* CSV 다운로드 버튼 */}
+              <button
+                onClick={exportConsultingCSV}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md transition-all self-start sm:self-auto"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>CSV / 엑셀 다운로드 (상담 명세)</span>
+              </button>
+            </div>
+
+            {consultingRequests.length === 0 ? (
+              <div className="text-center py-12 text-slate-500">
+                아직 접수된 교육상담신청 내역이 없습니다.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-300">
+                  <thead className="bg-slate-900/80 text-slate-400 uppercase font-mono border-b border-slate-700">
+                    <tr>
+                      <th className="py-3 px-3">번호</th>
+                      <th className="py-3 px-3">교육 분야</th>
+                      <th className="py-3 px-3">대상 및 인원</th>
+                      <th className="py-3 px-3">희망 일정 / 시간</th>
+                      <th className="py-3 px-3">신청자 (기업/기관)</th>
+                      <th className="py-3 px-3">연락처 및 이메일</th>
+                      <th className="py-3 px-3 max-w-xs">요청 및 문의사항</th>
+                      <th className="py-3 px-3">신청일시</th>
+                      <th className="py-3 px-3 text-center">관리</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-700/60 font-sans">
+                    {consultingRequests.map((req, idx) => (
+                      <tr key={req.id} className="hover:bg-slate-700/40 transition-colors">
+                        <td className="py-3 px-3 font-mono text-slate-500">#{idx + 1}</td>
+                        <td className="py-3 px-3">
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                            {req.category}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="font-bold text-white">{req.target}</div>
+                          <div className="text-[11px] text-slate-400 font-mono mt-0.5">{req.headcount}</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="font-mono font-bold text-emerald-400">{req.preferredDate}</div>
+                          <div className="text-[11px] text-slate-400 mt-0.5">{req.preferredTime}</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <div className="font-bold text-white">{req.name}</div>
+                          {req.organization && (
+                            <div className="text-[11px] text-blue-300 mt-0.5">{req.organization}</div>
+                          )}
+                        </td>
+                        <td className="py-3 px-3 font-mono">
+                          <div className="text-white">{req.phone}</div>
+                          <div className="text-slate-400 text-[11px]">{req.email}</div>
+                        </td>
+                        <td className="py-3 px-3 max-w-xs truncate text-slate-300" title={req.message}>
+                          {req.message || '-'}
+                        </td>
+                        <td className="py-3 px-3 font-mono text-slate-400 whitespace-nowrap">
+                          {req.createdAt}
+                        </td>
+                        <td className="py-3 px-3 text-center">
+                          <button
+                            onClick={() => handleDeleteConsulting(req.id)}
                             className="p-1.5 rounded-lg bg-red-600/70 hover:bg-red-600 text-white transition-colors"
                             title="삭제"
                           >
