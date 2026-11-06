@@ -64,18 +64,34 @@ export default function PhilosophySection({ onOpenConsulting }) {
             </blockquote>
 
             {/* 대표 약력 뱃지 그리드 */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-judiaistudio-textSub pt-1">
-              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-xs text-judiaistudio-textSub pt-1">
+              <div className="flex items-center gap-2 bg-white/70 p-2.5 rounded-xl border border-slate-100 shadow-sm">
                 <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                <span>국내외 영화제 수상 6관왕</span>
+                <div>
+                  <div className="font-bold text-slate-800">국내외 영화제 6관왕</div>
+                  <div className="text-[10px] text-slate-500">박일 감독 협업 파트너 (2023~)</div>
+                </div>
               </div>
-              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+              <div className="flex items-center gap-2 bg-white/70 p-2.5 rounded-xl border border-slate-100 shadow-sm">
                 <BookOpen className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                <span>교보문고 출간 작가 (《모두의 식탁》)</span>
+                <div>
+                  <div className="font-bold text-slate-800">교보문고 출간 작가</div>
+                  <div className="text-[10px] text-slate-500">동화집 《모두의 식탁》 정식 유통</div>
+                </div>
               </div>
-              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+              <div className="flex items-center gap-2 bg-white/70 p-2.5 rounded-xl border border-slate-100 shadow-sm">
                 <GraduationCap className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>전국 교육청 교사연수 채택 강사</span>
+                <div>
+                  <div className="font-bold text-slate-800">구글 제미나이 트레이너</div>
+                  <div className="text-[10px] text-slate-500">전국 교육청 교사연수 채택</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-white/70 p-2.5 rounded-xl border border-slate-100 shadow-sm">
+                <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                <div>
+                  <div className="font-bold text-slate-800">의미중심 교육창업학</div>
+                  <div className="text-[10px] text-slate-500">학술 논문 발표 연구자</div>
+                </div>
               </div>
             </div>
           </div>

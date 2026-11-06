@@ -78,19 +78,19 @@ const DEFAULT_PRODUCTS = [
   },
   {
     id: 'prod-2',
-    title: '스마트폰 영화제 6관왕 노하우: AI 영화 & 뮤직비디오 창작 VOD',
+    title: '박일 감독 × 주디PD의 스마트폰 영화제 수상작 메이킹 마스터클래스',
     category: 'VOD',
     price: 189000,
     originalPrice: 280000,
-    badge: '영화제 수상작 메이킹',
-    summary: '시청자미디어대상, 로마 국제영화제 극본상 수상작 <그리움>, <지각결혼식>의 AI 음악 작곡 및 영상 총편집 비법',
+    badge: '영화제 6관왕 실전비법',
+    summary: '예천국제스마트폰영화제 작품상 <지각결혼식>, 본선작 <북촌나들이>, <꽃할배>, <빈좌석>의 AI 음악 작곡 및 영상 총편집 비법 VOD',
     thumbnail: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80',
     createdAt: '2026-11-02',
     contentBlocks: [
       { id: 'b1', type: 'h1', text: '장비 0원, 스마트폰과 AI만으로 영화제 수상작을 만듭니다', align: 'center', highlight: 'yellow' },
-      { id: 'b2', type: 'p', text: '패럴스마트폰영화제 개막작 <지각결혼식>과 이태리 로마 국제영화제 극본상 수상작 <그리움>을 제작한 실제 워크플로우를 그대로 공개합니다. AI 작곡(Suno/Udio)으로 맞춤 OST를 뽑고, 생성형 영상과 스마트폰 촬영을 결합하는 마법 같은 테크닉을 배웁니다.', align: 'left', highlight: 'none' },
+      { id: 'b2', type: 'p', text: '2023년부터 80대 시니어 거장 박일 감독님과 함께 탄생시킨 예천국제스마트폰영화제 작품상 수상작 <지각결혼식>(패럴영화제 개막작), 본선 진출작 <북촌나들이>, 장려상 수상작 <AI가수 꽃할배> 및 <빈좌석>, 서울국제노인영화제 본선 진출작 <독립운동가 김향화가 말하다>의 실제 제작 워크플로우를 아낌없이 공개합니다.', align: 'left', highlight: 'none' },
       { id: 'b3', type: 'h2', text: 'VOD 핵심 수강 혜택', align: 'left', highlight: 'green' },
-      { id: 'b4', type: 'p', text: '• 스마트폰 영화 및 뮤직비디오 콘티 템플릿\n• 시네마틱 프롬프트 사전 50선 제공\n• 실제 영화제 출품 및 수상 전략 가이드북 증정', align: 'left', highlight: 'none' }
+      { id: 'b4', type: 'p', text: '• 스마트폰 단편영화 및 뮤직비디오 실전 콘티 양식\n• AI 작곡(Suno/Udio)으로 맞춤 영화 OST 및 BGM 뽑기\n• 시네마틱 프롬프트 사전 50선 제공\n• 실제 영화제 출품 요령 및 수상 전략 가이드북 증정', align: 'left', highlight: 'none' }
     ]
   },
   {
