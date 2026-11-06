@@ -100,3 +100,4 @@ export default function PaymentSuccessModal({ isOpen, order, onClose }) {
     </div>
   );
 }
+
