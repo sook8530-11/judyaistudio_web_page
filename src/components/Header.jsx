@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Sparkles, MessageSquare, Menu, X, Settings, Home, Mail, 
+  Sparkles, MessageSquare, Menu, X, Mail, 
   LogIn, UserPlus, LogOut, User 
 } from 'lucide-react';
 
@@ -133,50 +133,25 @@ export default function Header({
                 </button>
               </div>
             ) : (
-              /* 로그인 완료 상태: 관리자 전환 토글 및 사용자 뱃지 */
+              /* 로그인 완료 상태: 상용 사이트 기준의 깔끔한 사용자 뱃지 및 로그아웃 (관리자 모드는 헤더에 절대 노출하지 않음) */
               <div className="flex items-center gap-2 shrink-0">
-                
-                {currentUser.role === 'admin' && (
-                  <button
-                    type="button"
-                    onClick={onToggleAdmin}
-                    className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shadow-sm ${
-                      viewMode === 'admin'
-                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20'
-                        : isDarkHero
-                          ? 'bg-slate-800/90 hover:bg-slate-800 text-amber-300 border-amber-300/40'
-                          : 'bg-slate-900 hover:bg-black text-amber-300 border-slate-800'
-                    }`}
-                    title="관리자 대시보드 / 고객 홈 전환"
-                  >
-                    {viewMode === 'admin' ? (
-                      <>
-                        <Home className="w-3.5 h-3.5" />
-                        <span>고객 모드</span>
-                      </>
-                    ) : (
-                      <>
-                        <Settings className="w-3.5 h-3.5 text-amber-400" />
-                        <span>관리자 모드</span>
-                      </>
-                    )}
-                  </button>
-                )}
-
-                <div className={`whitespace-nowrap shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border ${
-                  isDarkHero ? 'bg-slate-900/60 border-slate-700/60 text-white' : 'bg-slate-100 border-slate-200 text-slate-800'
+                <div className={`whitespace-nowrap shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                  isDarkHero ? 'bg-white/10 border-white/20 text-white' : 'bg-slate-100 border-slate-200 text-slate-800'
                 }`}>
                   <User className="w-3.5 h-3.5 text-judiaistudio-gold" />
-                  <span className="text-xs font-bold">
-                    {currentUser.name ? currentUser.name.replace(' (관리자)', '') : '주디 대표'}님
+                  <span className="text-xs font-semibold">
+                    {currentUser.name ? currentUser.name.replace(' (관리자)', '').replace(' 대표', '') : '회원'}님
                   </span>
                   <button
                     type="button"
                     onClick={onLogout}
-                    className="ml-1 text-[11px] text-slate-400 hover:text-red-400 transition-colors"
+                    className={`ml-2 pl-2 border-l text-[11px] transition-colors flex items-center gap-1 ${
+                      isDarkHero ? 'border-white/20 text-white/70 hover:text-red-300' : 'border-slate-300 text-slate-500 hover:text-red-500'
+                    }`}
                     title="로그아웃"
                   >
                     <LogOut className="w-3 h-3" />
+                    <span>로그아웃</span>
                   </button>
                 </div>
               </div>
@@ -184,7 +159,7 @@ export default function Header({
 
           </div>
 
-          {/* Mobile Menu Button & Quick Login */}
+          {/* Mobile Menu Button & Quick Login/Logout */}
           <div className="md:hidden flex items-center gap-2">
             {!currentUser ? (
               <button
@@ -194,16 +169,15 @@ export default function Header({
               >
                 로그인
               </button>
-            ) : currentUser.role === 'admin' ? (
+            ) : (
               <button
                 type="button"
-                onClick={onToggleAdmin}
-                className="p-2 rounded-lg bg-slate-800 text-amber-300 text-xs font-bold"
-                title="관리자 전환"
+                onClick={onLogout}
+                className="px-2.5 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 text-xs font-medium"
               >
-                {viewMode === 'admin' ? '🏠' : '🛠️'}
+                로그아웃
               </button>
-            ) : null}
+            )}
 
             <button
               type="button"
@@ -316,7 +290,9 @@ export default function Header({
               </div>
             ) : (
               <div className="p-3 rounded-xl bg-slate-800 flex items-center justify-between text-xs">
-                <span className="font-bold text-white">👋 {currentUser.name}님 접속 중</span>
+                <span className="font-bold text-white">
+                  👋 {currentUser.name ? currentUser.name.replace(' (관리자)', '').replace(' 대표', '') : '회원'}님
+                </span>
                 <button
                   type="button"
                   onClick={() => {
@@ -341,19 +317,6 @@ export default function Header({
               <MessageSquare className="w-4 h-4 text-judiaistudio-gold" />
               <span>교육상담신청하기</span>
             </button>
-
-            {currentUser?.role === 'admin' && (
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onToggleAdmin();
-                }}
-                className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white font-bold text-xs"
-              >
-                <span>{viewMode === 'admin' ? '🏠 일반 고객 화면으로' : '🛠️ 관리자 대시보드로'}</span>
-              </button>
-            )}
           </div>
         </div>
       )}

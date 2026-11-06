@@ -24,7 +24,7 @@ import {
   getCurrentUser, setCurrentUser as saveCurrentUser, clearCurrentUser 
 } from './utils/storage';
 import { fetchProductsFromDb, fetchProductByIdFromDb } from './utils/supabaseClient';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Settings } from 'lucide-react';
 
 export default function App() {
   const [viewMode, setViewMode] = useState('home'); // 'home' | 'admin' | 'product-detail'
@@ -99,10 +99,21 @@ export default function App() {
       }
     }).catch(err => console.warn('Supabase initial fetch notice:', err));
 
-    // URL 해시 기반 라우팅 (#/products/:id) 감지
+    // URL 해시 기반 라우팅 (#/products/:id, #admin 등) 감지
     const checkHashRoute = () => {
-      const hash = window.location.hash;
-      const match = hash.match(/#\/?products\/([a-zA-Z0-9_-]+)/);
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#admin' || hash === '#/admin' || window.location.pathname === '/admin') {
+        const u = getCurrentUser();
+        const authed = u?.role === 'admin' || sessionStorage.getItem('judiaistudio_admin_authenticated') === 'true';
+        if (authed) {
+          setViewMode('admin');
+        } else {
+          setAuthModalTab('login');
+          setAuthModalOpen(true);
+        }
+        return;
+      }
+      const match = window.location.hash.match(/#\/?products\/([a-zA-Z0-9_-]+)/);
       if (match && match[1]) {
         setSelectedProductId(match[1]);
         setViewMode('product-detail');
@@ -236,7 +247,7 @@ export default function App() {
   const handleBackToHome = () => {
     setViewMode('home');
     setSelectedProductId(null);
-    if (window.location.hash.includes('/products/')) {
+    if (window.location.hash.includes('/products/') || window.location.hash.includes('admin')) {
       history.pushState('', document.title, window.location.pathname + window.location.search);
     }
     refreshProducts();
@@ -280,16 +291,18 @@ export default function App() {
         </div>
       )}
 
-      {/* 1. 상단 글로벌 네비게이션 헤더: 관리자 버튼 대신 [로그인], [회원가입] 버튼 배치 */}
-      <Header
-        viewMode={viewMode}
-        currentUser={currentUser}
-        onOpenAuth={handleOpenAuth}
-        onLogout={handleLogout}
-        onToggleAdmin={handleToggleAdmin}
-        onOpenConsulting={() => setIsConsultingOpen(true)}
-        onOpenNewsletter={() => setIsNewsletterOpen(true)}
-      />
+      {/* 1. 상단 글로벌 네비게이션 헤더: 관리자 대시보드에서는 숨기고 고객 화면(홈, 상세페이지)에서만 상용 기준의 클린 헤더 노출 */}
+      {viewMode !== 'admin' && (
+        <Header
+          viewMode={viewMode}
+          currentUser={currentUser}
+          onOpenAuth={handleOpenAuth}
+          onLogout={handleLogout}
+          onToggleAdmin={handleToggleAdmin}
+          onOpenConsulting={() => setIsConsultingOpen(true)}
+          onOpenNewsletter={() => setIsNewsletterOpen(true)}
+        />
+      )}
 
       {/* 2. 조건부 메인 뷰 렌더링 */}
       {viewMode === 'admin' ? (
@@ -347,6 +360,28 @@ export default function App() {
           onOpenNewsletter={() => setIsNewsletterOpen(true)} 
           onOpenAdminLogin={() => handleOpenAuth('login')}
         />
+      )}
+
+      {/* 3-1. 관리자 전용 플로팅 퀵 버튼 (일반 방문자에게는 절대 보이지 않으며, 관리자 로그인 상태에서 고객 홈을 열람할 때만 우측 하단에 조용히 플로팅) */}
+      {isAdmin && viewMode !== 'admin' && (
+        <aside 
+          aria-label="관리자 제어 패널"
+          className="fixed bottom-6 right-6 z-50 animate-fadeIn"
+        >
+          <button
+            type="button"
+            onClick={handleToggleAdmin}
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-950/95 text-amber-300 border border-amber-400/50 shadow-2xl backdrop-blur-md hover:bg-black hover:border-amber-300 hover:scale-105 transition-all text-xs font-bold group cursor-pointer"
+            title="관리자 대시보드로 이동"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <Settings className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-90 transition-transform duration-300" />
+            <span>관리자 대시보드</span>
+          </button>
+        </aside>
       )}
 
       {/* 4. 1:1 상담 신청 모달 */}
