@@ -1,15 +1,13 @@
 import React from 'react';
 import { 
   ArrowLeft, Check, Sparkles, MessageSquare, ShieldCheck, 
-  Share2, Tag, Calendar, Edit3, Trash2 
+  Share2, Tag, Calendar 
 } from 'lucide-react';
 
 export default function ProductDetailView({ 
   product, 
   onBack, 
-  onOpenConsulting, 
-  onEditProduct, 
-  onDeleteProduct 
+  onOpenConsulting 
 }) {
   if (!product) {
     return (
@@ -52,31 +50,7 @@ export default function ProductDetailView({
           <span>전체 상품 목록으로</span>
         </button>
 
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* 상품 정보 수정 버튼 */}
-          {onEditProduct && (
-            <button
-              onClick={() => onEditProduct(product)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-colors"
-              title="제목, 가격, 썸네일, 상세페이지 내용 수정"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>상품 수정</span>
-            </button>
-          )}
-
-          {/* 상품 삭제 버튼 */}
-          {onDeleteProduct && (
-            <button
-              onClick={() => onDeleteProduct(product)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold transition-colors"
-              title="이 상품 삭제"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>삭제</span>
-            </button>
-          )}
-
+        <div className="flex items-center gap-3">
           <button
             onClick={handleShare}
             className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors"
@@ -110,28 +84,14 @@ export default function ProductDetailView({
 
           {/* 상품 타이틀 및 가격 정보 */}
           <div className="md:col-span-7 space-y-4">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-judiaistudio-royalBlue">
-                  {product.category}
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-judiaistudio-royalBlue">
+                {product.category}
+              </span>
+              {product.badge && (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
+                  {product.badge}
                 </span>
-                {product.badge && (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
-                    {product.badge}
-                  </span>
-                )}
-              </div>
-
-              {/* 퀵 수정 버튼 */}
-              {onEditProduct && (
-                <button
-                  type="button"
-                  onClick={() => onEditProduct(product)}
-                  className="text-xs text-slate-500 hover:text-blue-600 flex items-center gap-1 font-bold underline"
-                >
-                  <Edit3 className="w-3.5 h-3.5" />
-                  <span>정보 수정하기</span>
-                </button>
               )}
             </div>
 

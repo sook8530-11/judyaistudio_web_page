@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { 
-  PlayCircle, MessageCircle, ArrowRight, Tag, Eye, Layers, Sparkles, 
-  Edit3, Trash2 
+  PlayCircle, MessageCircle, ArrowRight, Tag, Eye, Layers, Sparkles 
 } from 'lucide-react';
 
 export default function ProgramsPreview({ 
   products, 
   onSelectProduct, 
-  onOpenConsulting, 
-  onEditProduct, 
-  onDeleteProduct 
+  onOpenConsulting 
 }) {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
@@ -98,36 +95,6 @@ export default function ProgramsPreview({
                         <Tag className="w-3 h-3" />
                         {p.badge}
                       </span>
-                    )}
-                  </div>
-
-                  {/* 관리자 퀵 수정 / 삭제 버튼 */}
-                  <div className="absolute top-4 right-4 flex gap-1.5 z-10 opacity-90 hover:opacity-100">
-                    {onEditProduct && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onEditProduct(p);
-                        }}
-                        className="p-2 rounded-xl bg-slate-900/85 hover:bg-blue-600 text-white backdrop-blur-md border border-white/25 transition-all shadow-md hover:scale-110"
-                        title="제목·가격·상세페이지 내용 수정"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    {onDeleteProduct && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteProduct(p);
-                        }}
-                        className="p-2 rounded-xl bg-slate-900/85 hover:bg-red-600 text-white backdrop-blur-md border border-white/25 transition-all shadow-md hover:scale-110"
-                        title="이 상품 삭제"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     )}
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Sparkles, Shield, ArrowUp, Mail } from 'lucide-react';
+import { Sparkles, Shield, ArrowUp, Mail, Lock } from 'lucide-react';
 
-export default function Footer({ onOpenNewsletter }) {
+export default function Footer({ onOpenNewsletter, onOpenAdminLogin }) {
   const [activeModal, setActiveModal] = useState(null); // 'terms' | 'privacy' | 'refund' | null
 
   const scrollToTop = () => {
@@ -94,8 +94,18 @@ export default function Footer({ onOpenNewsletter }) {
             <div>
               주소: 서울특별시 강남구 테헤란로 000 주디AI스튜디오 | 개인정보보호책임자: 주디
             </div>
-            <div className="pt-1 text-slate-400">
-              Copyright © 2026 주디AI스튜디오 (Judy AI Studio). All rights reserved.
+            <div className="pt-1 text-slate-400 flex items-center justify-center sm:justify-start gap-2">
+              <span>Copyright © 2026 주디AI스튜디오 (Judy AI Studio). All rights reserved.</span>
+              {onOpenAdminLogin && (
+                <button
+                  type="button"
+                  onClick={onOpenAdminLogin}
+                  className="opacity-15 hover:opacity-90 text-slate-400 hover:text-amber-400 transition-opacity p-0.5 rounded cursor-pointer"
+                  title="관리자 전용 인증"
+                >
+                  <Lock className="w-2.5 h-2.5" />
+                </button>
+              )}
             </div>
           </div>
 

@@ -375,3 +375,4 @@ export default function ProductEditModal({ product, isOpen, onClose, onSave, onD
     </div>
   );
 }
+

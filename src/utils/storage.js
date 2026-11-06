@@ -212,3 +212,134 @@ export function compressImage(file, maxDimension = 600, quality = 0.7) {
   });
 }
 
+// 4. 수강생 및 관리자 회원 데이터 관리
+const USERS_KEY = 'judiaistudio_users';
+const CURRENT_USER_KEY = 'judiaistudio_current_user';
+
+const DEFAULT_USERS = [
+  {
+    id: 'user-admin',
+    name: '주디 대표',
+    email: 'admin@judiaistudio.com',
+    password: 'judy1234',
+    role: 'admin',
+    phone: '010-0000-0000',
+    joinedAt: '2026-11-01'
+  },
+  {
+    id: 'user-sample',
+    name: '김지식 수강생',
+    email: 'student@example.com',
+    password: '1234',
+    role: 'student',
+    phone: '010-1234-5678',
+    joinedAt: '2026-11-05'
+  }
+];
+
+export function getStoredUsers() {
+  try {
+    const raw = localStorage.getItem(USERS_KEY);
+    if (!raw) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(DEFAULT_USERS));
+      return DEFAULT_USERS;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('getStoredUsers error:', e);
+    return DEFAULT_USERS;
+  }
+}
+
+export function registerUser({ name, email, password, phone }) {
+  const users = getStoredUsers();
+  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+    throw new Error('이미 등록된 이메일 주소입니다.');
+  }
+
+  const newUser = {
+    id: 'user-' + Date.now(),
+    name,
+    email,
+    password,
+    phone: phone || '',
+    role: (email === 'admin' || email === 'admin@judiaistudio.com') ? 'admin' : 'student',
+    joinedAt: new Date().toISOString().split('T')[0]
+  };
+
+  const updated = [newUser, ...users];
+  localStorage.setItem(USERS_KEY, JSON.stringify(updated));
+  return newUser;
+}
+
+export function authenticateUser(emailOrId, password) {
+  const users = getStoredUsers();
+  const trimmed = emailOrId.trim().toLowerCase();
+  
+  // 빠른 관리자 단축키 지원 (아이디가 admin 또는 judy1234인 경우)
+  if ((trimmed === 'admin' || trimmed === 'admin@judiaistudio.com') && (password === 'judy1234' || password === '1234')) {
+    return {
+      id: 'user-admin',
+      name: '주디 대표 (관리자)',
+      email: 'admin@judiaistudio.com',
+      role: 'admin'
+    };
+  }
+
+  // 빠른 수강생 체험 지원
+  if (trimmed === 'student' && (password === '1234' || password === 'student1234')) {
+    return {
+      id: 'user-sample',
+      name: '김지식 수강생',
+      email: 'student@example.com',
+      role: 'student'
+    };
+  }
+
+  const found = users.find(u => 
+    (u.email.toLowerCase() === trimmed || u.id === trimmed) && u.password === password
+  );
+
+  if (!found) {
+    throw new Error('이메일(아이디) 또는 비밀번호가 일치하지 않습니다.');
+  }
+
+  return {
+    id: found.id,
+    name: found.name,
+    email: found.email,
+    role: found.role || 'student'
+  };
+}
+
+export function getCurrentUser() {
+  try {
+    const raw = sessionStorage.getItem(CURRENT_USER_KEY) || localStorage.getItem(CURRENT_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setCurrentUser(user, remember = false) {
+  try {
+    const data = JSON.stringify(user);
+    if (remember) {
+      localStorage.setItem(CURRENT_USER_KEY, data);
+    }
+    sessionStorage.setItem(CURRENT_USER_KEY, data);
+  } catch (e) {
+    console.error('setCurrentUser error:', e);
+  }
+}
+
+export function clearCurrentUser() {
+  try {
+    sessionStorage.removeItem(CURRENT_USER_KEY);
+    localStorage.removeItem(CURRENT_USER_KEY);
+    sessionStorage.removeItem('judiaistudio_admin_authenticated');
+  } catch (e) {
+    console.error('clearCurrentUser error:', e);
+  }
+}
+

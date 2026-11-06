@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Plus, Edit3, Trash2, UploadCloud, Link as LinkIcon, 
   Layers, Users, CheckCircle, ArrowLeft, Image as ImageIcon,
-  Download, FileSpreadsheet, Eye, Sparkles, AlertTriangle, RotateCcw
+  Download, FileSpreadsheet, Eye, Sparkles, AlertTriangle, RotateCcw,
+  LogOut 
 } from 'lucide-react';
 import { 
   getStoredProducts, addProduct, updateProduct, deleteProduct, 
@@ -12,7 +13,7 @@ import BlogEditor from './BlogEditor';
 import ProductEditModal from './ProductEditModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
-export default function AdminDashboard({ onBackToHome, onSelectProductView }) {
+export default function AdminDashboard({ onBackToHome, onSelectProductView, onLogout }) {
   const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers'
   const [products, setProducts] = useState(getStoredProducts);
   const [subscribers, setSubscribers] = useState(getStoredSubscribers);
@@ -211,9 +212,21 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView }) {
           </h1>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-slate-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-          <span className="hidden sm:inline font-mono text-emerald-400">LocalStorage 실시간 연동 중</span>
+        <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2 text-xs text-slate-400">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+            <span className="font-mono text-emerald-400">LocalStorage 실시간 연동 중</span>
+          </div>
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 text-xs font-bold transition-all"
+              title="관리자 세션 로그아웃"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>관리자 로그아웃</span>
+            </button>
+          )}
         </div>
       </header>
 

@@ -79,3 +79,4 @@ export default function DeleteConfirmModal({ product, isOpen, onClose, onConfirm
     </div>
   );
 }
+
