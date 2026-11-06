@@ -82,6 +82,9 @@ export function getStoredProducts() {
 export function saveStoredProducts(products) {
   try {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('judiaistudio_products_updated', { detail: products }));
+    }
   } catch (e) {
     console.error('saveStoredProducts error:', e);
     alert('저장 공간(localStorage) 용량이 부족하거나 오류가 발생했습니다.');
@@ -102,14 +105,21 @@ export function addProduct(product) {
 
 export function updateProduct(id, updatedFields) {
   const current = getStoredProducts();
-  const updated = current.map(item => item.id === id ? { ...item, ...updatedFields } : item);
+  const updated = current.map(item => String(item.id) === String(id) ? { ...item, ...updatedFields } : item);
   saveStoredProducts(updated);
+  return updated;
 }
 
 export function deleteProduct(id) {
   const current = getStoredProducts();
-  const updated = current.filter(item => item.id !== id);
+  const updated = current.filter(item => String(item.id) !== String(id));
   saveStoredProducts(updated);
+  return updated;
+}
+
+export function resetDefaultProducts() {
+  saveStoredProducts(DEFAULT_PRODUCTS);
+  return DEFAULT_PRODUCTS;
 }
 
 // 2. 뉴스레터 구독자 관리 함수들
@@ -201,3 +211,4 @@ export function compressImage(file, maxDimension = 600, quality = 0.7) {
     reader.readAsDataURL(file);
   });
 }
+

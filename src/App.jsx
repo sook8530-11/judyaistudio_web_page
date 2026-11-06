@@ -12,7 +12,10 @@ import ConsultingModal from './components/ConsultingModal';
 import NewsletterModal from './components/NewsletterModal';
 import AdminDashboard from './components/AdminDashboard';
 import ProductDetailView from './components/ProductDetailView';
-import { getStoredProducts } from './utils/storage';
+import ProductEditModal from './components/ProductEditModal';
+import DeleteConfirmModal from './components/DeleteConfirmModal';
+import { getStoredProducts, updateProduct, deleteProduct } from './utils/storage';
+import { CheckCircle } from 'lucide-react';
 
 export default function App() {
   const [viewMode, setViewMode] = useState('home'); // 'home' | 'admin' | 'product-detail'
@@ -22,12 +25,37 @@ export default function App() {
   const [isConsultingOpen, setIsConsultingOpen] = useState(false);
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
 
-  // 동적 상품 데이터 상태 (localStorage 연동)
+  // 전역 상품 수정 및 삭제 모달 상태
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [deletingProduct, setDeletingProduct] = useState(null);
+
+  // 전역 토스트 알림 상태
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  // 동적 상품 데이터 상태 (localStorage 실시간 연동)
   const [products, setProducts] = useState(getStoredProducts);
 
   const refreshProducts = () => {
     setProducts(getStoredProducts());
   };
+
+  // localStorage 변경 및 커스텀 이벤트 실시간 감지
+  useEffect(() => {
+    const handleStorageChange = () => {
+      refreshProducts();
+    };
+    window.addEventListener('judiaistudio_products_updated', handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('judiaistudio_products_updated', handleStorageChange);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   // 화면 전환 핸들러
   const handleToggleAdmin = () => {
@@ -53,11 +81,44 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const selectedProduct = products.find(p => p.id === selectedProductId);
+  // 전역 상품 수정 저장 핸들러
+  const handleSaveProductEdit = (updatedProduct) => {
+    updateProduct(updatedProduct.id, updatedProduct);
+    refreshProducts();
+    setEditingProduct(null);
+    showToast(`✅ "${updatedProduct.title}" 수정사항이 안전하게 저장되었습니다.`);
+  };
+
+  // 전역 상품 삭제 확인 및 실행 핸들러
+  const handleConfirmProductDelete = (id) => {
+    const target = products.find(p => String(p.id) === String(id));
+    const title = target?.title || '상품';
+    deleteProduct(id);
+    refreshProducts();
+    setDeletingProduct(null);
+    
+    // 만약 현재 삭제된 상품의 상세페이지를 보고 있었다면 홈으로 이동
+    if (String(selectedProductId) === String(id)) {
+      setSelectedProductId(null);
+      setViewMode('home');
+    }
+    
+    showToast(`🗑️ "${title}" 상품이 안전하게 삭제되었습니다.`);
+  };
+
+  const selectedProduct = products.find(p => String(p.id) === String(selectedProductId));
 
   return (
     <div className="min-h-screen flex flex-col bg-judiaistudio-background text-judiaistudio-textMain font-sans selection:bg-judiaistudio-royalBlue selection:text-white">
       
+      {/* 전역 토스트 알림 */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 px-5 py-3 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl flex items-center gap-2 animate-bounce">
+          <CheckCircle className="w-4 h-4" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* 1. 상단 글로벌 네비게이션 헤더 */}
       <Header
         viewMode={viewMode}
@@ -79,6 +140,8 @@ export default function App() {
           product={selectedProduct}
           onBack={handleBackToHome}
           onOpenConsulting={() => setIsConsultingOpen(true)}
+          onEditProduct={(p) => setEditingProduct(p)}
+          onDeleteProduct={(p) => setDeletingProduct(p)}
         />
       ) : (
         // [C] 일반 고객용 메인 홈 화면 (롱스크롤)
@@ -89,11 +152,13 @@ export default function App() {
           {/* 3대 철학 기둥 섹션 (대표 프로필 포함) */}
           <PhilosophySection onOpenConsulting={() => setIsConsultingOpen(true)} />
 
-          {/* 실전 프로그램 라인업 (1:1 정사각 썸네일 & localStorage 동적 연동) */}
+          {/* 실전 프로그램 라인업 (1:1 정사각 썸네일 & 즉시 수정/삭제 퀵액션 연동) */}
           <ProgramsPreview
             products={products}
             onSelectProduct={handleSelectProduct}
             onOpenConsulting={() => setIsConsultingOpen(true)}
+            onEditProduct={(p) => setEditingProduct(p)}
+            onDeleteProduct={(p) => setDeletingProduct(p)}
           />
 
           {/* 수강생 후기 무한 마퀴 롤링 섹션 */}
@@ -126,6 +191,26 @@ export default function App() {
         isOpen={isNewsletterOpen}
         onClose={() => setIsNewsletterOpen(false)}
         onSubscriberAdded={refreshProducts}
+      />
+
+      {/* 6. 전역 상품 정보 및 상세페이지 수정 모달 */}
+      <ProductEditModal
+        product={editingProduct}
+        isOpen={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        onSave={handleSaveProductEdit}
+        onDelete={(p) => {
+          setEditingProduct(null);
+          setDeletingProduct(p);
+        }}
+      />
+
+      {/* 7. 전역 상품 삭제 확인 커스텀 모달 */}
+      <DeleteConfirmModal
+        product={deletingProduct}
+        isOpen={!!deletingProduct}
+        onClose={() => setDeletingProduct(null)}
+        onConfirm={handleConfirmProductDelete}
       />
 
     </div>

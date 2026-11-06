@@ -149,3 +149,4 @@ export default function NewsletterModal({ isOpen, onClose, onSubscriberAdded }) 
     </div>
   );
 }
+
