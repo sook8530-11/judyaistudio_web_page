@@ -3,22 +3,24 @@ import {
   Plus, Edit3, Trash2, UploadCloud, Link as LinkIcon, 
   Layers, Users, CheckCircle, ArrowLeft, Image as ImageIcon,
   Download, FileSpreadsheet, Eye, Sparkles, AlertTriangle, RotateCcw,
-  LogOut 
+  LogOut, MessageSquare, CreditCard, ShoppingBag 
 } from 'lucide-react';
 import { 
   getStoredProducts, addProduct, updateProduct, deleteProduct, 
   getStoredSubscribers, deleteSubscriber, compressImage, resetDefaultProducts,
-  getStoredConsultingRequests, deleteConsultingRequest 
+  getStoredConsultingRequests, deleteConsultingRequest,
+  getStoredOrders, deleteOrder 
 } from '../utils/storage';
 import BlogEditor from './BlogEditor';
 import ProductEditModal from './ProductEditModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 export default function AdminDashboard({ onBackToHome, onSelectProductView, onLogout }) {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers' | 'consulting'
+  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers' | 'consulting' | 'orders'
   const [products, setProducts] = useState(getStoredProducts);
   const [subscribers, setSubscribers] = useState(getStoredSubscribers);
   const [consultingRequests, setConsultingRequests] = useState(getStoredConsultingRequests);
+  const [orders, setOrders] = useState(getStoredOrders);
 
   // 모달 상태: 수정 모달 & 커스텀 삭제 확인 모달
   const [editingProduct, setEditingProduct] = useState(null);
@@ -38,13 +40,16 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
       setProducts(getStoredProducts());
       setSubscribers(getStoredSubscribers());
       setConsultingRequests(getStoredConsultingRequests());
+      setOrders(getStoredOrders());
     };
     window.addEventListener('judiaistudio_products_updated', syncData);
     window.addEventListener('judiaistudio_consulting_updated', syncData);
+    window.addEventListener('judiaistudio_orders_updated', syncData);
     window.addEventListener('storage', syncData);
     return () => {
       window.removeEventListener('judiaistudio_products_updated', syncData);
       window.removeEventListener('judiaistudio_consulting_updated', syncData);
+      window.removeEventListener('judiaistudio_orders_updated', syncData);
       window.removeEventListener('storage', syncData);
     };
   }, []);
@@ -220,6 +225,37 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     showToast('📥 교육상담신청 CSV 파일이 다운로드되었습니다.');
   };
 
+  // 10. 주문 내역 삭제
+  const handleDeleteOrder = (id) => {
+    if (window.confirm('해당 결제 주문 내역을 삭제하시겠습니까?')) {
+      deleteOrder(id);
+      setOrders(getStoredOrders());
+      showToast('주문 내역이 삭제되었습니다.');
+    }
+  };
+
+  // 11. 주문 내역 CSV 다운로드
+  const exportOrdersCSV = () => {
+    if (orders.length === 0) {
+      alert('내보낼 결제 주문 내역이 없습니다.');
+      return;
+    }
+    const headers = ['주문번호,상품명,카테고리,결제금액,결제수단,구매자명,이메일,연락처,상태,결제일시'];
+    const rows = orders.map(o => 
+      `"${o.id}","${o.productTitle}","${o.category || ''}","${o.amount}","${o.paymentMethod || ''}","${o.customerName}","${o.customerEmail || ''}","${o.customerPhone || ''}","${o.status || '결제완료'}","${o.paidAt}"`
+    );
+    const csvContent = '\uFEFF' + [headers, ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `judiaistudio_orders_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('📥 결제 주문 내역 CSV 파일이 다운로드되었습니다.');
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-32">
       
@@ -322,7 +358,20 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
               }`}
             >
               <MessageSquare className="w-4 h-4 text-amber-300" />
-              <span>교육상담신청 접수 내역 ({consultingRequests.length})</span>
+              <span>교육상담신청 내역 ({consultingRequests.length})</span>
+            </button>
+
+            {/* 탭 5: 결제 주문 내역 */}
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'orders'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 scale-105'
+                  : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <CreditCard className="w-4 h-4 text-cyan-300" />
+              <span>💳 결제 주문 내역 ({orders.length})</span>
             </button>
           </div>
 
@@ -887,6 +936,105 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
                         <td className="py-3 px-3 text-center">
                           <button
                             onClick={() => handleDeleteConsulting(req.id)}
+                            className="p-1.5 rounded-lg bg-red-600/70 hover:bg-red-600 text-white transition-colors"
+                            title="삭제"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ===================== TAB 5: 토스페이먼츠 결제 주문 내역 ===================== */}
+        {activeTab === 'orders' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* 상단 통계 요약 및 엑셀 다운로드 */}
+            <div className="flex flex-wrap items-center justify-between gap-4 p-6 rounded-3xl bg-slate-800/80 border border-slate-700/80">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-blue-400" />
+                  <h3 className="text-lg font-bold text-white">토스페이먼츠 실시간 결제 승인 내역</h3>
+                </div>
+                <p className="text-xs text-slate-400">
+                  고객이 메인 화면 또는 상세페이지에서 결제한 주문 데이터가 localStorage에 안전하게 영구 저장됩니다.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="px-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-right">
+                  <div className="text-[10px] text-slate-400">누적 결제 총액</div>
+                  <div className="text-lg font-mono font-bold text-cyan-400">
+                    {orders.reduce((sum, o) => sum + (Number(o.amount) || 0), 0).toLocaleString()}원
+                  </div>
+                </div>
+
+                <button
+                  onClick={exportOrdersCSV}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/20 transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>주문 내역 CSV 다운로드</span>
+                </button>
+              </div>
+            </div>
+
+            {orders.length === 0 ? (
+              <div className="text-center py-16 bg-slate-800/40 rounded-3xl border border-dashed border-slate-700 text-slate-400 text-sm">
+                <CreditCard className="w-10 h-10 mx-auto mb-3 opacity-40 text-blue-400" />
+                <p>아직 접수된 결제 주문 내역이 없습니다.</p>
+                <p className="text-xs text-slate-500 mt-1">메인 홈에서 상품의 [구매하기] 버튼을 눌러 토스 테스트 결제를 진행해 보세요.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-2xl border border-slate-700/80 bg-slate-800/50">
+                <table className="w-full text-left text-xs text-slate-300">
+                  <thead className="bg-slate-950/70 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700">
+                    <tr>
+                      <th className="py-3 px-3">주문번호</th>
+                      <th className="py-3 px-3">상품명</th>
+                      <th className="py-3 px-3">카테고리</th>
+                      <th className="py-3 px-3">결제금액</th>
+                      <th className="py-3 px-3">결제수단</th>
+                      <th className="py-3 px-3">구매자명</th>
+                      <th className="py-3 px-3">연락처 / 이메일</th>
+                      <th className="py-3 px-3">상태</th>
+                      <th className="py-3 px-3">결제일시</th>
+                      <th className="py-3 px-3 text-center">관리</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-700/60 font-sans">
+                    {orders.map((ord) => (
+                      <tr key={ord.id} className="hover:bg-slate-700/40 transition-colors">
+                        <td className="py-3 px-3 font-mono text-cyan-300 font-semibold">{ord.id}</td>
+                        <td className="py-3 px-3 font-bold text-white max-w-xs truncate">{ord.productTitle}</td>
+                        <td className="py-3 px-3">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700 text-slate-300">
+                            {ord.category || '강의'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 font-mono font-bold text-emerald-400">
+                          {Number(ord.amount).toLocaleString()}원
+                        </td>
+                        <td className="py-3 px-3 text-slate-300">{ord.paymentMethod || '토스페이'}</td>
+                        <td className="py-3 px-3 font-bold text-white">{ord.customerName}</td>
+                        <td className="py-3 px-3 font-mono">
+                          <div className="text-white">{ord.customerPhone || '-'}</div>
+                          <div className="text-slate-400 text-[11px]">{ord.customerEmail || '-'}</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            {ord.status || '결제완료'}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 font-mono text-slate-400 whitespace-nowrap">{ord.paidAt}</td>
+                        <td className="py-3 px-3 text-center">
+                          <button
+                            onClick={() => handleDeleteOrder(ord.id)}
                             className="p-1.5 rounded-lg bg-red-600/70 hover:bg-red-600 text-white transition-colors"
                             title="삭제"
                           >

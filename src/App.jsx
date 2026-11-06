@@ -16,6 +16,8 @@ import ProductEditModal from './components/ProductEditModal';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 import AdminLoginModal from './components/AdminLoginModal';
 import AuthModal from './components/AuthModal';
+import TossPaymentModal from './components/TossPaymentModal';
+import PaymentSuccessModal from './components/PaymentSuccessModal';
 import { 
   getStoredProducts, updateProduct, deleteProduct, 
   getCurrentUser, setCurrentUser as saveCurrentUser, clearCurrentUser 
@@ -25,6 +27,10 @@ import { CheckCircle } from 'lucide-react';
 export default function App() {
   const [viewMode, setViewMode] = useState('home'); // 'home' | 'admin' | 'product-detail'
   const [selectedProductId, setSelectedProductId] = useState(null);
+  
+  // 토스페이먼츠 결제 모달 상태
+  const [purchasingProduct, setPurchasingProduct] = useState(null);
+  const [completedOrder, setCompletedOrder] = useState(null);
   
   // 로그인 회원 상태 관리 (수강생 / 관리자)
   const [currentUser, setCurrentUser] = useState(() => {
@@ -241,6 +247,7 @@ export default function App() {
           product={selectedProduct}
           onBack={handleBackToHome}
           onOpenConsulting={() => setIsConsultingOpen(true)}
+          onPurchaseProduct={(p) => setPurchasingProduct(p)}
         />
       ) : (
         // [C] 일반 수강생/고객용 메인 홈 화면 (관리자 버튼 완전 은닉, 100% 수강생 전용 UI)
@@ -256,6 +263,7 @@ export default function App() {
             products={products}
             onSelectProduct={handleSelectProduct}
             onOpenConsulting={() => setIsConsultingOpen(true)}
+            onPurchaseProduct={(p) => setPurchasingProduct(p)}
           />
 
           {/* 수강생 후기 무한 마퀴 롤링 섹션 */}
@@ -326,6 +334,26 @@ export default function App() {
         isOpen={!!deletingProduct}
         onClose={() => setDeletingProduct(null)}
         onConfirm={handleConfirmProductDelete}
+      />
+
+      {/* 10. 토스페이먼츠 안전 결제 모달 (테스트 위젯 모드) */}
+      <TossPaymentModal
+        isOpen={!!purchasingProduct}
+        product={purchasingProduct}
+        currentUser={currentUser}
+        onClose={() => setPurchasingProduct(null)}
+        onSuccess={(order) => {
+          setCompletedOrder(order);
+          refreshProducts();
+          showToast(`💳 "${order.productTitle}" 주문 및 결제가 안전하게 승인되었습니다!`);
+        }}
+      />
+
+      {/* 11. 결제 완료 승인 영수증 알림 모달 */}
+      <PaymentSuccessModal
+        isOpen={!!completedOrder}
+        order={completedOrder}
+        onClose={() => setCompletedOrder(null)}
       />
 
     </div>

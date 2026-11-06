@@ -3,6 +3,24 @@
 const PRODUCTS_KEY = 'judiaistudio_products';
 const SUBSCRIBERS_KEY = 'judiaistudio_subscribers';
 const CONSULTING_KEY = 'judiaistudio_consulting_requests';
+const ORDERS_KEY = 'judiaistudio_orders';
+
+// 초기 샘플 주문/결제 내역 데이터
+const DEFAULT_ORDERS = [
+  {
+    id: 'ORD-20261106-9182',
+    productId: 'prod-1',
+    productTitle: 'AI 지식 비즈니스 실전 마스터 코스',
+    category: 'VOD',
+    amount: 245000,
+    paymentMethod: '토스페이 / 신용카드',
+    customerName: '김민수',
+    customerEmail: 'minsu.kim@example.com',
+    customerPhone: '010-3841-9281',
+    status: '결제완료',
+    paidAt: '2026-11-06 14:15'
+  }
+];
 
 // 초기 교육 상담 신청 샘플 데이터
 const DEFAULT_CONSULTING_REQUESTS = [
@@ -234,6 +252,50 @@ export function deleteConsultingRequest(id) {
   localStorage.setItem(CONSULTING_KEY, JSON.stringify(updated));
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('judiaistudio_consulting_updated', { detail: updated }));
+  }
+  return updated;
+}
+
+// 2-3. 토스페이먼츠 결제 완료 주문 내역 관리
+export function getStoredOrders() {
+  try {
+    const raw = localStorage.getItem(ORDERS_KEY);
+    if (!raw) {
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(DEFAULT_ORDERS));
+      return DEFAULT_ORDERS;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    console.error('getStoredOrders error:', e);
+    return DEFAULT_ORDERS;
+  }
+}
+
+export function addOrder(orderData) {
+  const current = getStoredOrders();
+  const now = new Date();
+  const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  
+  const newOrder = {
+    id: orderData.id || ('ORD-' + Date.now().toString().slice(-8)),
+    ...orderData,
+    status: '결제완료',
+    paidAt: dateStr
+  };
+  const updated = [newOrder, ...current];
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(updated));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('judiaistudio_orders_updated', { detail: updated }));
+  }
+  return newOrder;
+}
+
+export function deleteOrder(id) {
+  const current = getStoredOrders();
+  const updated = current.filter(item => item.id !== id);
+  localStorage.setItem(ORDERS_KEY, JSON.stringify(updated));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('judiaistudio_orders_updated', { detail: updated }));
   }
   return updated;
 }

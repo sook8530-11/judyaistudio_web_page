@@ -1,13 +1,14 @@
 import React from 'react';
 import { 
   ArrowLeft, Check, Sparkles, MessageSquare, ShieldCheck, 
-  Share2, Tag, Calendar 
+  Share2, Tag, Calendar, CreditCard, Lock 
 } from 'lucide-react';
 
 export default function ProductDetailView({ 
   product, 
   onBack, 
-  onOpenConsulting 
+  onOpenConsulting,
+  onPurchaseProduct 
 }) {
   if (!product) {
     return (
@@ -50,7 +51,7 @@ export default function ProductDetailView({
           <span>전체 상품 목록으로</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             onClick={handleShare}
             className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors"
@@ -58,12 +59,23 @@ export default function ProductDetailView({
           >
             <Share2 className="w-4 h-4" />
           </button>
+          
           <button
             onClick={onOpenConsulting}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white text-xs font-bold shadow-md transition-all whitespace-nowrap"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all whitespace-nowrap"
           >
-            {product.price === 0 ? '무료 다운로드 신청' : '교육상담신청'}
+            교육상담신청
           </button>
+
+          {product.price > 0 && onPurchaseProduct && (
+            <button
+              onClick={() => onPurchaseProduct(product)}
+              className="px-4 sm:px-5 py-2 rounded-xl bg-[#0064FF] hover:bg-blue-600 text-white text-xs font-bold shadow-md transition-all whitespace-nowrap flex items-center gap-1.5"
+            >
+              <CreditCard className="w-3.5 h-3.5" />
+              <span>구매하기</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -124,13 +136,34 @@ export default function ProductDetailView({
             </div>
 
             <div className="pt-2 flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={onOpenConsulting}
-                className="flex-1 py-4 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white font-bold text-sm shadow-lg shadow-judiaistudio-royalBlue/20 transition-all flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4 text-judiaistudio-gold" />
-                <span>{product.price === 0 ? '무료 가이드북 즉시 신청' : '지금 바로 수강 신청하기'}</span>
-              </button>
+              {product.price > 0 && onPurchaseProduct ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => onPurchaseProduct(product)}
+                    className="flex-1 py-4 rounded-xl bg-[#0064FF] hover:bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2"
+                  >
+                    <CreditCard className="w-4 h-4 text-white" />
+                    <span>지금 바로 구매하기 ({Number(product.price).toLocaleString()}원)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={onOpenConsulting}
+                    className="px-6 py-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-all"
+                  >
+                    교육상담신청
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onOpenConsulting}
+                  className="flex-1 py-4 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white font-bold text-sm shadow-lg shadow-judiaistudio-royalBlue/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4 text-judiaistudio-gold" />
+                  <span>무료 가이드북 즉시 신청하기</span>
+                </button>
+              )}
             </div>
           </div>
 

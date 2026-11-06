@@ -6,7 +6,8 @@ import {
 export default function ProgramsPreview({ 
   products, 
   onSelectProduct, 
-  onOpenConsulting 
+  onOpenConsulting,
+  onPurchaseProduct 
 }) {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
@@ -137,10 +138,19 @@ export default function ProgramsPreview({
                 </button>
 
                 <button
-                  onClick={onOpenConsulting}
+                  type="button"
+                  onClick={() => {
+                    if (p.price === 0) {
+                      onOpenConsulting();
+                    } else if (onPurchaseProduct) {
+                      onPurchaseProduct(p);
+                    } else {
+                      onOpenConsulting();
+                    }
+                  }}
                   className="flex-1 py-3 rounded-xl bg-judiaistudio-royalBlue hover:bg-judiaistudio-royalBlueHover text-white font-bold text-xs shadow-md shadow-judiaistudio-royalBlue/20 transition-all flex items-center justify-center gap-1.5"
                 >
-                  <span>{p.price === 0 ? '무료 다운로드' : '신청하기'}</span>
+                  <span>{p.price === 0 ? '무료 다운로드' : '구매하기'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
