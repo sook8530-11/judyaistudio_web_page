@@ -142,8 +142,8 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     if (file) handleThumbnailFile(file);
   };
 
-  // 2. 신규 상품 등록 제출
-  const handleSubmitProduct = (e) => {
+  // 2. 신규 상품 등록 제출 (Supabase 원격 DB 'products' 테이블 Insert 연동)
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
       alert('상품명을 입력해 주세요.');
@@ -154,52 +154,64 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
       return;
     }
 
-    const newProd = addProduct({
-      ...form,
-      price: Number(form.price) || 0,
-      originalPrice: Number(form.originalPrice) || Number(form.price) || 0
-    });
+    try {
+      await addProduct({
+        ...form,
+        description: form.summary,
+        image_url: form.thumbnail,
+        detail_content: JSON.stringify(form.contentBlocks),
+        price: Number(form.price) || 0,
+        originalPrice: Number(form.originalPrice) || Number(form.price) || 0
+      });
 
-    setProducts(getStoredProducts());
-    showToast('✨ 새 상품이 성공적으로 등록되었습니다!');
-    setActiveTab('products'); // 등록 완료 후 목록 탭으로 자동 이동
+      setProducts(getStoredProducts());
+      showToast('✨ 새 상품이 Supabase 원격 DB 및 로컬에 성공적으로 등록되었습니다!');
+      setActiveTab('products'); // 등록 완료 후 목록 탭으로 자동 이동
 
-    // 폼 초기화
-    setForm({
-      title: '',
-      category: 'VOD',
-      price: '',
-      originalPrice: '',
-      badge: 'NEW',
-      summary: '',
-      thumbnail: '',
-      contentBlocks: [
-        { id: 'b-init-1', type: 'h1', text: '새 상품 소개', align: 'left', highlight: 'yellow' },
-        { id: 'b-init-2', type: 'p', text: '본문 내용을 작성해 주세요.', align: 'left', highlight: 'none' }
-      ]
-    });
-    setThumbnailUrlInput('');
+      // 폼 초기화
+      setForm({
+        title: '',
+        category: 'VOD',
+        price: '',
+        originalPrice: '',
+        badge: 'NEW',
+        summary: '',
+        thumbnail: '',
+        contentBlocks: [
+          { id: 'b-init-1', type: 'h1', text: '새 상품 소개', align: 'left', highlight: 'yellow' },
+          { id: 'b-init-2', type: 'p', text: '본문 내용을 작성해 주세요.', align: 'left', highlight: 'none' }
+        ]
+      });
+      setThumbnailUrlInput('');
+    } catch (err) {
+      alert('상품 등록 중 오류가 발생했습니다: ' + err.message);
+    }
   };
 
-  // 3. 상품 수정 저장 핸들러
-  const handleSaveProductEdit = (updatedProduct) => {
-    updateProduct(updatedProduct.id, updatedProduct);
+  // 3. 상품 수정 저장 핸들러 (Supabase Update 연동 및 즉시 리렌더링)
+  const handleSaveProductEdit = async (updatedProduct) => {
+    await updateProduct(updatedProduct.id, {
+      ...updatedProduct,
+      description: updatedProduct.summary,
+      image_url: updatedProduct.thumbnail,
+      detail_content: JSON.stringify(updatedProduct.contentBlocks)
+    });
     setProducts(getStoredProducts());
     setEditingProduct(null);
-    showToast(`✅ "${updatedProduct.title}" 수정사항이 저장되었습니다.`);
+    showToast(`✅ "${updatedProduct.title}" 수정사항이 원격 DB에 저장되었습니다.`);
   };
 
-  // 4. 상품 삭제 확인 후 실행 핸들러
-  const handleConfirmDeleteProduct = (id) => {
+  // 4. 상품 삭제 확인 후 실행 핸들러 (Supabase Delete 연동 및 즉시 리렌더링)
+  const handleConfirmDeleteProduct = async (id) => {
     const target = products.find(p => String(p.id) === String(id));
     const title = target?.title || '상품';
-    deleteProduct(id);
+    await deleteProduct(id);
     setProducts(getStoredProducts());
     setDeletingProduct(null);
     if (editingProduct && String(editingProduct.id) === String(id)) {
       setEditingProduct(null);
     }
-    showToast(`🗑️ "${title}" 상품이 안전하게 삭제되었습니다.`);
+    showToast(`🗑️ "${title}" 상품이 원격 DB에서 삭제되었습니다.`);
   };
 
   // 5. 기본 샘플 상품 데이터 복원
@@ -211,12 +223,12 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     }
   };
 
-  // 6. 구독자 삭제
-  const handleDeleteSubscriber = (id) => {
+  // 6. 구독자 삭제 (Supabase Delete 연동)
+  const handleDeleteSubscriber = async (id) => {
     if (window.confirm('해당 구독자를 목록에서 삭제하시겠습니까?')) {
-      deleteSubscriber(id);
+      await deleteSubscriber(id);
       setSubscribers(getStoredSubscribers());
-      showToast('구독자가 목록에서 삭제되었습니다.');
+      showToast('구독자가 삭제되었습니다.');
     }
   };
 

@@ -20,9 +20,10 @@ import AuthModal from './components/AuthModal';
 import TossPaymentModal from './components/TossPaymentModal';
 import PaymentSuccessModal from './components/PaymentSuccessModal';
 import { 
-  getStoredProducts, updateProduct, deleteProduct, 
+  getStoredProducts, saveStoredProducts, updateProduct, deleteProduct, 
   getCurrentUser, setCurrentUser as saveCurrentUser, clearCurrentUser 
 } from './utils/storage';
+import { fetchProductsFromDb, fetchProductByIdFromDb } from './utils/supabaseClient';
 import { CheckCircle } from 'lucide-react';
 
 export default function App() {
@@ -73,12 +74,48 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  // 동적 상품 데이터 상태 (localStorage 실시간 연동)
+  // 동적 상품 데이터 상태 (Supabase 원격 DB 비동기 로딩 + LocalStorage 캐시)
   const [products, setProducts] = useState(getStoredProducts);
 
-  const refreshProducts = () => {
+  const refreshProducts = async () => {
     setProducts(getStoredProducts());
+    try {
+      const cloudProds = await fetchProductsFromDb();
+      if (cloudProds && cloudProds.length > 0) {
+        setProducts(cloudProds);
+      }
+    } catch (e) {
+      console.warn('refreshProducts note:', e);
+    }
   };
+
+  // 1. Supabase 원격 DB 'products' 테이블 비동기 Select 가져오기 및 URL 해시 라우팅 감지
+  useEffect(() => {
+    let isMounted = true;
+    fetchProductsFromDb().then((cloudProds) => {
+      if (isMounted && cloudProds && cloudProds.length > 0) {
+        setProducts(cloudProds);
+        saveStoredProducts(cloudProds);
+      }
+    }).catch(err => console.warn('Supabase initial fetch notice:', err));
+
+    // URL 해시 기반 라우팅 (#/products/:id) 감지
+    const checkHashRoute = () => {
+      const hash = window.location.hash;
+      const match = hash.match(/#\/?products\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        setSelectedProductId(match[1]);
+        setViewMode('product-detail');
+      }
+    };
+    checkHashRoute();
+    window.addEventListener('hashchange', checkHashRoute);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('hashchange', checkHashRoute);
+    };
+  }, []);
 
   // 키보드 단축키 (Ctrl+Shift+A) 또는 URL ?admin=true 감지하여 관리자 로그인 모달 열기
   useEffect(() => {
@@ -173,15 +210,35 @@ export default function App() {
     setIsAdminLoginOpen(false);
   };
 
-  const handleSelectProduct = (id) => {
+  const handleSelectProduct = async (id) => {
     setSelectedProductId(id);
     setViewMode('product-detail');
+    window.location.hash = `/products/${id}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Supabase 원격 DB에서 최신 데이터 비동기 단일 조회 (Select by ID)
+    try {
+      const cloudItem = await fetchProductByIdFromDb(id);
+      if (cloudItem) {
+        setProducts((prev) => {
+          const exists = prev.some((p) => String(p.id) === String(id));
+          if (exists) {
+            return prev.map((p) => (String(p.id) === String(id) ? cloudItem : p));
+          }
+          return [cloudItem, ...prev];
+        });
+      }
+    } catch (e) {
+      console.warn('fetchProductById note:', e);
+    }
   };
 
   const handleBackToHome = () => {
     setViewMode('home');
     setSelectedProductId(null);
+    if (window.location.hash.includes('/products/')) {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
     refreshProducts();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

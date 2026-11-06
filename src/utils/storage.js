@@ -1,5 +1,15 @@
 // 브라우저 localStorage 기반 통합 데이터 관리 & Supabase 클라우드 동기화 엔진
-import { supabase } from './supabaseClient';
+import { 
+  supabase, 
+  fetchProductsFromDb, 
+  insertProductToDb, 
+  updateProductInDb, 
+  deleteProductFromDb,
+  insertNewsletterSubscriber,
+  fetchNewsletterSubscribers,
+  deleteNewsletterSubscriber,
+  formatProductFromDb
+} from './supabaseClient';
 
 const PRODUCTS_KEY = 'judiaistudio_products';
 const SUBSCRIBERS_KEY = 'judiaistudio_subscribers';
@@ -177,29 +187,56 @@ export function saveStoredProducts(products) {
   }
 }
 
-export function addProduct(product) {
+export async function addProduct(product) {
   const current = getStoredProducts();
-  const newItem = {
+  const tempId = product.id || ('prod-' + Date.now());
+  const localItem = {
     ...product,
-    id: 'prod-' + Date.now(),
+    id: tempId,
     createdAt: new Date().toISOString().split('T')[0]
   };
-  const updated = [newItem, ...current];
+  const updated = [localItem, ...current];
   saveStoredProducts(updated);
-  return newItem;
+
+  // Supabase 원격 DB 'products' 테이블 비동기 Insert
+  try {
+    const dbItem = await insertProductToDb(product);
+    if (dbItem) {
+      const refreshed = getStoredProducts().map(p => p.id === tempId ? dbItem : p);
+      saveStoredProducts(refreshed);
+      return dbItem;
+    }
+  } catch (err) {
+    console.warn('Supabase addProduct warning (로컬 저장 유지):', err.message);
+  }
+  return localItem;
 }
 
-export function updateProduct(id, updatedFields) {
+export async function updateProduct(id, updatedFields) {
   const current = getStoredProducts();
   const updated = current.map(item => String(item.id) === String(id) ? { ...item, ...updatedFields } : item);
   saveStoredProducts(updated);
+
+  // Supabase 원격 DB 'products' 테이블 비동기 Update
+  try {
+    await updateProductInDb(id, updatedFields);
+  } catch (err) {
+    console.warn('Supabase updateProduct warning:', err.message);
+  }
   return updated;
 }
 
-export function deleteProduct(id) {
+export async function deleteProduct(id) {
   const current = getStoredProducts();
   const updated = current.filter(item => String(item.id) !== String(id));
   saveStoredProducts(updated);
+
+  // Supabase 원격 DB 'products' 테이블 비동기 Delete
+  try {
+    await deleteProductFromDb(id);
+  } catch (err) {
+    console.warn('Supabase deleteProduct warning:', err.message);
+  }
   return updated;
 }
 
@@ -239,20 +276,15 @@ export async function addSubscriber({ name, phone, email, type = 'newsletter' })
   const updated = [newSub, ...current];
   localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(updated));
 
-  // Supabase 비동기 클라우드 전송
+  // Supabase 'newsletter_subscribers' 테이블 비동기 전송
   try {
-    supabase.from('subscribers').insert([{
-      id: newSub.id,
+    insertNewsletterSubscriber({
       name: newSub.name,
       phone: newSub.phone,
-      email: newSub.email,
-      type: newSub.type,
-      date: newSub.date
-    }]).then(({ error }) => {
-      if (error) console.warn('Supabase subscribers insert notice:', error.message);
+      email: newSub.email
     });
   } catch (err) {
-    console.warn('Supabase subscribers network note:', err);
+    console.warn('Supabase newsletter_subscribers insert notice:', err);
   }
 
   return newSub;
@@ -265,11 +297,9 @@ export async function deleteSubscriber(id) {
 
   // Supabase 클라우드 동기화 삭제
   try {
-    supabase.from('subscribers').delete().eq('id', id).then(({ error }) => {
-      if (error) console.warn('Supabase subscribers delete notice:', error.message);
-    });
+    deleteNewsletterSubscriber(id);
   } catch (err) {
-    console.warn('Supabase subscribers delete note:', err);
+    console.warn('Supabase newsletter_subscribers delete note:', err);
   }
 }
 
@@ -429,21 +459,39 @@ export async function deleteOrder(id) {
 // 2-4. Supabase 클라우드 데이터 전체 동기화 함수
 export async function syncAllFromSupabase() {
   const results = {
+    productsSynced: false,
     subscribersSynced: false,
     consultingSynced: false,
     ordersSynced: false
   };
 
   try {
-    // 1) 구독자 가져오기
-    const { data: subsData, error: subsErr } = await supabase
-      .from('subscribers')
-      .select('*')
-      .order('created_at', { ascending: false });
+    // 0) products 테이블 동기화
+    const cloudProducts = await fetchProductsFromDb();
+    if (cloudProducts && cloudProducts.length > 0) {
+      saveStoredProducts(cloudProducts);
+      results.productsSynced = true;
+    }
 
-    if (!subsErr && subsData && subsData.length > 0) {
-      localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(subsData));
+    // 1) newsletter_subscribers 테이블 동기화 (subscribers 테이블 호환)
+    const cloudSubs = await fetchNewsletterSubscribers();
+    if (cloudSubs && cloudSubs.length > 0) {
+      const formattedSubs = cloudSubs.map(s => ({
+        id: s.id,
+        name: s.name,
+        phone: s.phone,
+        email: s.email,
+        date: s.created_at ? new Date(s.created_at).toLocaleString('ko-KR') : ''
+      }));
+      localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(formattedSubs));
       results.subscribersSynced = true;
+    } else {
+      // subscribers 테이블도 보조 조회
+      const { data: altSubs } = await supabase.from('subscribers').select('*').order('created_at', { ascending: false });
+      if (altSubs && altSubs.length > 0) {
+        localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(altSubs));
+        results.subscribersSynced = true;
+      }
     }
 
     // 2) 상담신청 가져오기

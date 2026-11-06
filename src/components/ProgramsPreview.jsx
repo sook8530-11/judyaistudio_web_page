@@ -75,7 +75,7 @@ export default function ProgramsPreview({
                 {/* 1:1 정사각 썸네일 (aspect-square & object-cover 완벽 적용) */}
                 <div className="relative w-full aspect-square bg-slate-900 overflow-hidden cursor-pointer" onClick={() => onSelectProduct(p.id)}>
                   <img
-                    src={p.thumbnail}
+                    src={p.thumbnail || p.image_url}
                     alt={p.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -110,7 +110,7 @@ export default function ProgramsPreview({
                   </h3>
 
                   <p className="text-xs text-judiaistudio-textSub line-clamp-2 leading-relaxed">
-                    {p.summary || '주디AI스튜디오에서 제공하는 검증된 실무 지식 비즈니스 프로그램입니다.'}
+                    {p.summary || p.description || '주디AI스튜디오에서 제공하는 검증된 실무 지식 비즈니스 프로그램입니다.'}
                   </p>
 
                   {/* 가격 */}

@@ -87,7 +87,7 @@ export default function ProductDetailView({
           <div className="md:col-span-5 flex justify-center">
             <div className="w-full max-w-sm rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 bg-slate-900 aspect-square">
               <img
-                src={product.thumbnail}
+                src={product.thumbnail || product.image_url}
                 alt={product.title}
                 className="w-full h-full object-cover"
               />
@@ -112,7 +112,7 @@ export default function ProductDetailView({
             </h1>
 
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-              {product.summary || '주디AI스튜디오에서 제공하는 검증된 실전 지식 비즈니스 프로그램입니다.'}
+              {product.summary || product.description || '주디AI스튜디오에서 제공하는 검증된 실전 지식 비즈니스 프로그램입니다.'}
             </p>
 
             {/* 가격 박스 */}
@@ -179,11 +179,27 @@ export default function ProductDetailView({
             <span className="font-mono">{product.createdAt || '2026.11'}</span>
           </div>
 
-          {/* 블록 렌더링 (블로그 포스팅 형식) */}
-          {(!product.contentBlocks || product.contentBlocks.length === 0) ? (
-            <p className="text-slate-500 py-8 text-center text-sm">등록된 상세 설명이 없습니다.</p>
-          ) : (
-            product.contentBlocks.map((b) => {
+          {/* 블록 렌더링 (블로그 포스팅 형식 또는 detail_content 파싱) */}
+          {(() => {
+            const blocks = Array.isArray(product.contentBlocks) && product.contentBlocks.length > 0
+              ? product.contentBlocks
+              : (typeof product.detail_content === 'string' && product.detail_content.trim())
+                ? (() => {
+                    try {
+                      const parsed = JSON.parse(product.detail_content);
+                      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                    } catch {}
+                    return [{ id: 'b-text', type: 'p', text: product.detail_content, align: 'left' }];
+                  })()
+                : product.description
+                  ? [{ id: 'b-desc', type: 'p', text: product.description, align: 'left' }]
+                  : [];
+
+            if (blocks.length === 0) {
+              return <p className="text-slate-500 py-8 text-center text-sm">등록된 상세 설명이 없습니다.</p>;
+            }
+
+            return blocks.map((b) => {
               // 정렬 클래스
               const alignClass = 
                 b.align === 'center' ? 'text-center' :
@@ -233,8 +249,8 @@ export default function ProductDetailView({
                   </span>
                 </div>
               );
-            })
-          )}
+            });
+          })()}
 
           {/* 블로그 하단 대표 약속 배너 */}
           <div className="mt-12 pt-8 border-t border-slate-100 bg-slate-50 rounded-2xl p-6 text-center space-y-3">

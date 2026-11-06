@@ -80,3 +80,4 @@ CREATE POLICY "Allow anon all orders" ON public.orders FOR ALL TO anon USING (tr
 
 DROP POLICY IF EXISTS "Allow anon all products" ON public.products;
 CREATE POLICY "Allow anon all products" ON public.products FOR ALL TO anon USING (true) WITH CHECK (true);
+
