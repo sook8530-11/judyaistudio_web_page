@@ -3,14 +3,16 @@ import {
   Plus, Edit3, Trash2, UploadCloud, Link as LinkIcon, 
   Layers, Users, CheckCircle, ArrowLeft, Image as ImageIcon,
   Download, FileSpreadsheet, Eye, Sparkles, AlertTriangle, RotateCcw,
-  LogOut, MessageSquare, CreditCard, ShoppingBag, Newspaper, Copy, Send 
+  LogOut, MessageSquare, CreditCard, ShoppingBag, Newspaper, Copy, Send,
+  Database, RefreshCw 
 } from 'lucide-react';
 import { 
   getStoredProducts, addProduct, updateProduct, deleteProduct, 
   getStoredSubscribers, deleteSubscriber, compressImage, resetDefaultProducts,
   getStoredConsultingRequests, deleteConsultingRequest,
-  getStoredOrders, deleteOrder 
+  getStoredOrders, deleteOrder, syncAllFromSupabase 
 } from '../utils/storage';
+import { checkSupabaseConnection, SUPABASE_URL } from '../utils/supabaseClient';
 import { NEWSLETTER_ISSUES } from '../data/newsletterData';
 import BlogEditor from './BlogEditor';
 import ProductEditModal from './ProductEditModal';
@@ -35,6 +37,10 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     setTimeout(() => setToastMessage(null), 3000);
   };
 
+  // Supabase 클라우드 DB 연결 상태 및 동기화 상태
+  const [cloudStatus, setCloudStatus] = useState({ connected: false, tablesReady: false, loading: true, message: '' });
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // 실시간 동기화 리스너
   useEffect(() => {
     const syncData = () => {
@@ -47,6 +53,20 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
     window.addEventListener('judiaistudio_consulting_updated', syncData);
     window.addEventListener('judiaistudio_orders_updated', syncData);
     window.addEventListener('storage', syncData);
+
+    // 마운트 시 Supabase 연결 점검 및 자동 클라우드 동기화
+    checkSupabaseConnection().then(status => {
+      setCloudStatus({ ...status, loading: false });
+      if (status.connected && status.tablesReady) {
+        syncAllFromSupabase().then(() => {
+          setProducts(getStoredProducts());
+          setSubscribers(getStoredSubscribers());
+          setConsultingRequests(getStoredConsultingRequests());
+          setOrders(getStoredOrders());
+        });
+      }
+    });
+
     return () => {
       window.removeEventListener('judiaistudio_products_updated', syncData);
       window.removeEventListener('judiaistudio_consulting_updated', syncData);
@@ -54,6 +74,31 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
       window.removeEventListener('storage', syncData);
     };
   }, []);
+
+  // 수동 클라우드 새로고침/동기화 버튼 핸들러
+  const handleSyncCloud = async () => {
+    setIsSyncing(true);
+    try {
+      const status = await checkSupabaseConnection();
+      setCloudStatus({ ...status, loading: false });
+      if (status.connected && status.tablesReady) {
+        await syncAllFromSupabase();
+        setProducts(getStoredProducts());
+        setSubscribers(getStoredSubscribers());
+        setConsultingRequests(getStoredConsultingRequests());
+        setOrders(getStoredOrders());
+        showToast('⚡ Supabase 클라우드 데이터 동기화 완료!');
+      } else if (status.connected && !status.tablesReady) {
+        showToast('⚠️ Supabase 연결됨 (테이블 생성 SQL 실행이 필요합니다)');
+      } else {
+        showToast('Supabase 연결 알림: ' + status.message);
+      }
+    } catch (e) {
+      showToast('동기화 중 오류: ' + e.message);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   // 신규 상품 등록 폼 상태
   const [form, setForm] = useState({
@@ -286,10 +331,42 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 text-xs text-slate-400">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-            <span className="font-mono text-emerald-400">LocalStorage 실시간 연동 중</span>
+          {/* Supabase 클라우드 상태 뱃지 및 동기화 버튼 */}
+          <div className="hidden lg:flex items-center gap-2">
+            {cloudStatus.loading ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-xs border border-slate-700">
+                <RefreshCw className="w-3 h-3 animate-spin text-blue-400" />
+                <span>클라우드 확인 중...</span>
+              </span>
+            ) : cloudStatus.connected && cloudStatus.tablesReady ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs border border-emerald-500/30 font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <Database className="w-3.5 h-3.5" />
+                <span>Supabase 클라우드 연동됨</span>
+              </span>
+            ) : cloudStatus.connected ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs border border-amber-500/30 font-bold">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                <span>Supabase 연결됨 (테이블 생성 대기)</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 text-slate-400 text-xs border border-slate-700">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                <span>로컬 저장소 운영 중</span>
+              </span>
+            )}
+
+            <button
+              onClick={handleSyncCloud}
+              disabled={isSyncing}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition-all hover:scale-105"
+              title="Supabase 클라우드 데이터 즉시 동기화"
+            >
+              <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-blue-400' : ''}`} />
+              <span>동기화</span>
+            </button>
           </div>
+
           {onLogout && (
             <button
               onClick={onLogout}
@@ -305,6 +382,62 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
 
       {/* 메인 대시보드 컨테이너 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
+        
+        {/* Supabase 테이블 생성 안내 알림 배너 (테이블이 아직 없을 때만 노출) */}
+        {cloudStatus.connected && !cloudStatus.tablesReady && (
+          <div className="p-5 rounded-2xl bg-amber-950/40 border border-amber-500/40 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 mt-0.5">
+                <Database className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <span>Supabase 클라우드 DB 접속 성공!</span>
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">마지막 1단계</span>
+                </h4>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Supabase 프로젝트(<code className="text-amber-300 font-mono text-[11px]">oaxxrsadopwhvgklmcva</code>)와 성공적으로 연결되었습니다. 
+                  Supabase 웹 대시보드의 <strong>SQL Editor</strong>에서 테이블 생성 쿼리를 1회 실행하시면 구독자·상담·결제 내역이 클라우드에 영구 보관됩니다.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0 w-full md:w-auto">
+              <button
+                onClick={() => {
+                  const sqlCode = `-- 주디AI스튜디오 테이블 생성 SQL
+CREATE TABLE IF NOT EXISTS public.subscribers (id TEXT PRIMARY KEY, name TEXT NOT NULL, phone TEXT, email TEXT, type TEXT DEFAULT 'newsletter', date TEXT, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS public.consulting_requests (id TEXT PRIMARY KEY, name TEXT NOT NULL, organization TEXT, phone TEXT, email TEXT, category TEXT, target TEXT, headcount TEXT, schedule_preference TEXT, preferred_date TEXT, preferred_time TEXT, message TEXT, status TEXT DEFAULT '신규접수', created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS public.orders (id TEXT PRIMARY KEY, product_id TEXT, product_title TEXT, category TEXT, amount NUMERIC, payment_method TEXT, customer_name TEXT, customer_email TEXT, customer_phone TEXT, status TEXT DEFAULT '결제완료', paid_at TEXT, created_at TIMESTAMPTZ DEFAULT NOW());
+CREATE TABLE IF NOT EXISTS public.products (id TEXT PRIMARY KEY, title TEXT NOT NULL, category TEXT, price NUMERIC DEFAULT 0, original_price NUMERIC DEFAULT 0, badge TEXT, summary TEXT, thumbnail TEXT, content_blocks JSONB, created_at TIMESTAMPTZ DEFAULT NOW());
+ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.consulting_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow anon all subscribers" ON public.subscribers FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Allow anon all consulting_requests" ON public.consulting_requests FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Allow anon all orders" ON public.orders FOR ALL TO anon USING (true) WITH CHECK (true);
+CREATE POLICY "Allow anon all products" ON public.products FOR ALL TO anon USING (true) WITH CHECK (true);`;
+                  navigator.clipboard.writeText(sqlCode);
+                  showToast('📋 SQL 생성 쿼리가 클립보드에 복사되었습니다!');
+                }}
+                className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all shadow-md"
+              >
+                <Copy className="w-3.5 h-3.5" />
+                <span>SQL 쿼리 복사하기</span>
+              </button>
+
+              <a
+                href="https://supabase.com/dashboard/project/oaxxrsadopwhvgklmcva/sql/new"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 md:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all"
+              >
+                <span>Supabase SQL 열기</span>
+              </a>
+            </div>
+          </div>
+        )}
         
         {/* 상단 통합 탭 네비게이션: 3개 탭 명확화 */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">

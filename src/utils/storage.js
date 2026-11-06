@@ -1,4 +1,5 @@
-// 브라우저 localStorage 기반 통합 데이터 관리 & 이미지 압축 엔진
+// 브라우저 localStorage 기반 통합 데이터 관리 & Supabase 클라우드 동기화 엔진
+import { supabase } from './supabaseClient';
 
 const PRODUCTS_KEY = 'judiaistudio_products';
 const SUBSCRIBERS_KEY = 'judiaistudio_subscribers';
@@ -207,7 +208,7 @@ export function resetDefaultProducts() {
   return DEFAULT_PRODUCTS;
 }
 
-// 2. 뉴스레터 구독자 관리 함수들
+// 2. 뉴스레터 구독자 관리 함수들 (LocalStorage + Supabase 클라우드 동기화)
 export function getStoredSubscribers() {
   try {
     const raw = localStorage.getItem(SUBSCRIBERS_KEY);
@@ -222,7 +223,7 @@ export function getStoredSubscribers() {
   }
 }
 
-export function addSubscriber({ name, phone, email }) {
+export async function addSubscriber({ name, phone, email, type = 'newsletter' }) {
   const current = getStoredSubscribers();
   const now = new Date();
   const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -230,19 +231,46 @@ export function addSubscriber({ name, phone, email }) {
   const newSub = {
     id: 'sub-' + Date.now(),
     name,
-    phone,
-    email,
+    phone: phone || '',
+    email: email || '',
+    type,
     date: dateStr
   };
   const updated = [newSub, ...current];
   localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(updated));
+
+  // Supabase 비동기 클라우드 전송
+  try {
+    supabase.from('subscribers').insert([{
+      id: newSub.id,
+      name: newSub.name,
+      phone: newSub.phone,
+      email: newSub.email,
+      type: newSub.type,
+      date: newSub.date
+    }]).then(({ error }) => {
+      if (error) console.warn('Supabase subscribers insert notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase subscribers network note:', err);
+  }
+
   return newSub;
 }
 
-export function deleteSubscriber(id) {
+export async function deleteSubscriber(id) {
   const current = getStoredSubscribers();
   const updated = current.filter(item => item.id !== id);
   localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(updated));
+
+  // Supabase 클라우드 동기화 삭제
+  try {
+    supabase.from('subscribers').delete().eq('id', id).then(({ error }) => {
+      if (error) console.warn('Supabase subscribers delete notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase subscribers delete note:', err);
+  }
 }
 
 // 2-2. 교육상담신청 (기업, 개인, 특강, 캠프, 코칭, 컨설팅) 데이터 관리
@@ -260,7 +288,7 @@ export function getStoredConsultingRequests() {
   }
 }
 
-export function addConsultingRequest(data) {
+export async function addConsultingRequest(data) {
   const current = getStoredConsultingRequests();
   const now = new Date();
   const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -275,16 +303,50 @@ export function addConsultingRequest(data) {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('judiaistudio_consulting_updated', { detail: updated }));
   }
+
+  // Supabase 클라우드 비동기 전송
+  try {
+    supabase.from('consulting_requests').insert([{
+      id: newReq.id,
+      name: newReq.name || '',
+      organization: newReq.organization || '',
+      phone: newReq.phone || '',
+      email: newReq.email || '',
+      category: newReq.category || '',
+      target: newReq.target || '',
+      headcount: newReq.headcount || '',
+      schedule_preference: newReq.schedulePreference || '',
+      preferred_date: newReq.preferredDate || '',
+      preferred_time: newReq.preferredTime || '',
+      message: newReq.message || '',
+      status: '신규접수'
+    }]).then(({ error }) => {
+      if (error) console.warn('Supabase consulting_requests insert notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase consulting_requests network note:', err);
+  }
+
   return newReq;
 }
 
-export function deleteConsultingRequest(id) {
+export async function deleteConsultingRequest(id) {
   const current = getStoredConsultingRequests();
   const updated = current.filter(item => item.id !== id);
   localStorage.setItem(CONSULTING_KEY, JSON.stringify(updated));
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('judiaistudio_consulting_updated', { detail: updated }));
   }
+
+  // Supabase 클라우드 동기화 삭제
+  try {
+    supabase.from('consulting_requests').delete().eq('id', id).then(({ error }) => {
+      if (error) console.warn('Supabase consulting_requests delete notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase consulting_requests delete note:', err);
+  }
+
   return updated;
 }
 
@@ -303,7 +365,7 @@ export function getStoredOrders() {
   }
 }
 
-export function addOrder(orderData) {
+export async function addOrder(orderData) {
   const current = getStoredOrders();
   const now = new Date();
   const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -319,17 +381,126 @@ export function addOrder(orderData) {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('judiaistudio_orders_updated', { detail: updated }));
   }
+
+  // Supabase 클라우드 비동기 전송
+  try {
+    supabase.from('orders').insert([{
+      id: newOrder.id,
+      product_id: newOrder.productId || '',
+      product_title: newOrder.productTitle || '',
+      category: newOrder.category || '',
+      amount: Number(newOrder.amount) || 0,
+      payment_method: newOrder.paymentMethod || '',
+      customer_name: newOrder.customerName || '',
+      customer_email: newOrder.customerEmail || '',
+      customer_phone: newOrder.customerPhone || '',
+      status: newOrder.status || '결제완료',
+      paid_at: newOrder.paidAt
+    }]).then(({ error }) => {
+      if (error) console.warn('Supabase orders insert notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase orders network note:', err);
+  }
+
   return newOrder;
 }
 
-export function deleteOrder(id) {
+export async function deleteOrder(id) {
   const current = getStoredOrders();
   const updated = current.filter(item => item.id !== id);
   localStorage.setItem(ORDERS_KEY, JSON.stringify(updated));
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('judiaistudio_orders_updated', { detail: updated }));
   }
+
+  // Supabase 클라우드 동기화 삭제
+  try {
+    supabase.from('orders').delete().eq('id', id).then(({ error }) => {
+      if (error) console.warn('Supabase orders delete notice:', error.message);
+    });
+  } catch (err) {
+    console.warn('Supabase orders delete note:', err);
+  }
+
   return updated;
+}
+
+// 2-4. Supabase 클라우드 데이터 전체 동기화 함수
+export async function syncAllFromSupabase() {
+  const results = {
+    subscribersSynced: false,
+    consultingSynced: false,
+    ordersSynced: false
+  };
+
+  try {
+    // 1) 구독자 가져오기
+    const { data: subsData, error: subsErr } = await supabase
+      .from('subscribers')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!subsErr && subsData && subsData.length > 0) {
+      localStorage.setItem(SUBSCRIBERS_KEY, JSON.stringify(subsData));
+      results.subscribersSynced = true;
+    }
+
+    // 2) 상담신청 가져오기
+    const { data: reqsData, error: reqsErr } = await supabase
+      .from('consulting_requests')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!reqsErr && reqsData && reqsData.length > 0) {
+      const formatted = reqsData.map(d => ({
+        id: d.id,
+        name: d.name,
+        organization: d.organization,
+        phone: d.phone,
+        email: d.email,
+        category: d.category,
+        target: d.target,
+        headcount: d.headcount,
+        schedulePreference: d.schedule_preference,
+        preferredDate: d.preferred_date,
+        preferredTime: d.preferred_time,
+        message: d.message,
+        status: d.status,
+        createdAt: d.created_at ? new Date(d.created_at).toLocaleString('ko-KR') : ''
+      }));
+      localStorage.setItem(CONSULTING_KEY, JSON.stringify(formatted));
+      results.consultingSynced = true;
+    }
+
+    // 3) 주문내역 가져오기
+    const { data: ordersData, error: ordersErr } = await supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (!ordersErr && ordersData && ordersData.length > 0) {
+      const formatted = ordersData.map(d => ({
+        id: d.id,
+        productId: d.product_id,
+        productTitle: d.product_title,
+        category: d.category,
+        amount: d.amount,
+        paymentMethod: d.payment_method,
+        customerName: d.customer_name,
+        customerEmail: d.customer_email,
+        customerPhone: d.customer_phone,
+        status: d.status,
+        paidAt: d.paid_at || (d.created_at ? new Date(d.created_at).toLocaleString('ko-KR') : '')
+      }));
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(formatted));
+      results.ordersSynced = true;
+    }
+  } catch (err) {
+    console.warn('syncAllFromSupabase error:', err);
+  }
+
+  return results;
 }
 
 // 3. HTML5 Canvas 초경량 이미지 압축 엔진 (최대 600px, JPEG 70% 압축 -> 30KB~50KB 내외 Base64)
