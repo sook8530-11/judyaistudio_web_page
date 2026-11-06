@@ -3,7 +3,7 @@ import {
   Plus, Edit3, Trash2, UploadCloud, Link as LinkIcon, 
   Layers, Users, CheckCircle, ArrowLeft, Image as ImageIcon,
   Download, FileSpreadsheet, Eye, Sparkles, AlertTriangle, RotateCcw,
-  LogOut, MessageSquare, CreditCard, ShoppingBag 
+  LogOut, MessageSquare, CreditCard, ShoppingBag, Newspaper, Copy, Send 
 } from 'lucide-react';
 import { 
   getStoredProducts, addProduct, updateProduct, deleteProduct, 
@@ -11,12 +11,13 @@ import {
   getStoredConsultingRequests, deleteConsultingRequest,
   getStoredOrders, deleteOrder 
 } from '../utils/storage';
+import { NEWSLETTER_ISSUES } from '../data/newsletterData';
 import BlogEditor from './BlogEditor';
 import ProductEditModal from './ProductEditModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
 
 export default function AdminDashboard({ onBackToHome, onSelectProductView, onLogout }) {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers' | 'consulting' | 'orders'
+  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'new-product' | 'subscribers' | 'consulting' | 'orders' | 'newsletters'
   const [products, setProducts] = useState(getStoredProducts);
   const [subscribers, setSubscribers] = useState(getStoredSubscribers);
   const [consultingRequests, setConsultingRequests] = useState(getStoredConsultingRequests);
@@ -372,6 +373,19 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
             >
               <CreditCard className="w-4 h-4 text-cyan-300" />
               <span>💳 결제 주문 내역 ({orders.length})</span>
+            </button>
+
+            {/* 탭 6: 뉴스레터 발행 콘텐츠 */}
+            <button
+              onClick={() => setActiveTab('newsletters')}
+              className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+                activeTab === 'newsletters'
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30 scale-105'
+                  : 'bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Newspaper className="w-4 h-4 text-rose-300" />
+              <span>📰 뉴스레터 발행 자료실 (3편)</span>
             </button>
           </div>
 
@@ -1047,6 +1061,85 @@ export default function AdminDashboard({ onBackToHome, onSelectProductView, onLo
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ===================== TAB 6: 뉴스레터 발행 콘텐츠 자료실 ===================== */}
+        {activeTab === 'newsletters' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* 상단 안내 배너 */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-800/80 border border-slate-700/80">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Newspaper className="w-5 h-5 text-rose-400" />
+                  <h3 className="text-lg font-bold text-white">주디AI스튜디오 공식 뉴스레터 발행 원고 (3편)</h3>
+                </div>
+                <p className="text-xs text-slate-400">
+                  구독자들에게 보낼 이메일 발송용 또는 네이버 블로그/브런치 연재용으로 즉시 사용할 수 있도록 완벽하게 집필된 실전 콘텐츠입니다.
+                </p>
+              </div>
+
+              <div className="text-xs text-rose-300 bg-rose-500/10 border border-rose-500/20 px-3 py-1.5 rounded-xl font-bold">
+                총 {NEWSLETTER_ISSUES.length}개 발행 원고 준비 완료
+              </div>
+            </div>
+
+            {/* 뉴스레터 카드 리스트 */}
+            <div className="grid grid-cols-1 gap-6">
+              {NEWSLETTER_ISSUES.map((issue) => (
+                <div 
+                  key={issue.id} 
+                  className="bg-slate-800/60 rounded-3xl p-6 sm:p-8 border border-slate-700/80 space-y-5 hover:border-slate-600 transition-colors"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/80 pb-4">
+                    <div className="flex items-center gap-2.5">
+                      <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                        {issue.issueNumber}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-slate-700 text-slate-300">
+                        {issue.badge}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          const fullText = `[${issue.title}]\n\n${issue.body.trim()}\n\n💡 오늘의 실천 과제: ${issue.actionTip}\n\n- 주디AI스튜디오 대표 주디 올림`;
+                          navigator.clipboard.writeText(fullText);
+                          showToast(`📋 ${issue.issueNumber} 원고가 클립보드에 복사되었습니다!`);
+                        }}
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-all"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>원고 전체 복사</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-black text-white leading-snug">
+                      {issue.title}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-slate-400 font-medium">
+                      {issue.summary}
+                    </p>
+                  </div>
+
+                  {/* 뉴스레터 본문 미리보기 박스 */}
+                  <div className="bg-slate-900/80 rounded-2xl p-5 border border-slate-800 text-xs text-slate-300 leading-relaxed font-sans whitespace-pre-line max-h-72 overflow-y-auto">
+                    {issue.body.trim()}
+                  </div>
+
+                  {/* 하단 실천 팁 */}
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200 flex items-start gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <strong>구독자 실천 팁:</strong> {issue.actionTip}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

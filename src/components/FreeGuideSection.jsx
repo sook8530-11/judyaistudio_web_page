@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Download, CheckCircle, FileText, Sparkles, ArrowRight, Bell, ShieldCheck } from 'lucide-react';
+import { Download, CheckCircle, FileText, Sparkles, ArrowRight, Bell, ShieldCheck, BookOpen } from 'lucide-react';
 import { addSubscriber } from '../utils/storage';
+import GuidebookViewerModal from './GuidebookViewerModal';
 
 export default function FreeGuideSection() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [downloaded, setDownloaded] = useState(false);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,6 +25,8 @@ export default function FreeGuideSection() {
     }
 
     setDownloaded(true);
+    // 신청 즉시 뷰어 모달 자동 오픈하여 감동 극대화
+    setIsViewerOpen(true);
   };
 
   return (
@@ -73,14 +77,26 @@ export default function FreeGuideSection() {
             </p>
 
             {downloaded ? (
-              <div className="p-5 rounded-2xl bg-white/20 border border-white/30 text-white flex items-start gap-3 animate-fadeIn text-left">
-                <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <div className="text-sm space-y-1">
-                  <strong className="text-base text-white">🎉 사전 예약이 성공적으로 완료되었습니다!</strong>
-                  <p className="text-xs text-blue-100 leading-relaxed">
-                    입력하신 <strong>{email}</strong> 주소로 우선 배포 명단에 등록되었습니다. 
-                    가이드북 완성 즉시 가장 먼저 다운로드 링크를 보내드리겠습니다.
-                  </p>
+              <div className="p-6 rounded-2xl bg-white/20 border border-white/30 text-white space-y-4 animate-fadeIn text-left">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-sm space-y-1">
+                    <strong className="text-base text-white">🎉 사전 예약 및 1차 배포본 열람 권한이 부여되었습니다!</strong>
+                    <p className="text-xs text-blue-100 leading-relaxed">
+                      입력하신 <strong>{email}</strong> 주소로 우선 배포 명단에 등록되었습니다. 아래 버튼을 눌러 준비된 <strong>1차 배포본 전문(총 5개 챕터 + 프롬프트 10선)</strong>을 지금 바로 열람하거나 PDF로 저장하실 수 있습니다.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-1 flex flex-wrap gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsViewerOpen(true)}
+                    className="px-6 py-3 rounded-xl bg-judiaistudio-gold hover:bg-judiaistudio-goldHover text-slate-950 font-black text-xs shadow-xl flex items-center gap-2 transition-all hover:scale-105"
+                  >
+                    <BookOpen className="w-4 h-4 text-slate-950" />
+                    <span>📖 1차 배포본 지금 즉시 열람하기 (PDF/인쇄 지원)</span>
+                  </button>
                 </div>
               </div>
             ) : (
@@ -102,13 +118,23 @@ export default function FreeGuideSection() {
                     className="flex-1 px-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-judiaistudio-gold shadow-inner"
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-judiaistudio-gold hover:bg-judiaistudio-goldHover text-slate-950 font-black text-sm shadow-lg shadow-black/20 flex items-center justify-center gap-2 transition-all"
-                >
-                  <Bell className="w-4 h-4 text-slate-950" />
-                  <span>1차 배포본 우선 예약 신청하기 (무료)</span>
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <button
+                    type="submit"
+                    className="flex-1 px-7 py-3.5 rounded-xl bg-judiaistudio-gold hover:bg-judiaistudio-goldHover text-slate-950 font-black text-sm shadow-lg shadow-black/20 flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Bell className="w-4 h-4 text-slate-950" />
+                    <span>1차 배포본 무료 신청 및 즉시 열람</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsViewerOpen(true)}
+                    className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/30 flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <BookOpen className="w-4 h-4 text-amber-300" />
+                    <span>목차 미리보기</span>
+                  </button>
+                </div>
               </form>
             )}
 
@@ -120,6 +146,12 @@ export default function FreeGuideSection() {
 
         </div>
       </div>
+
+      {/* 1차 배포본 인터랙티브 뷰어 모달 */}
+      <GuidebookViewerModal
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+      />
     </section>
   );
 }
