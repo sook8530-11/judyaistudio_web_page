@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { 
   Trophy, BookOpen, Film, Music, Sparkles, ExternalLink, 
-  Award, CheckCircle, GraduationCap, Globe, Heart, Play, Clapperboard, Video
+  Award, CheckCircle, GraduationCap, Globe, Heart, Play, Clapperboard, Video, Newspaper
 } from 'lucide-react';
 
 export default function PortfolioShowcaseSection() {
-  // 박일 감독님 X 주디PD 협업 영화 및 주요 필모그래피
+  // 박일 감독님 X 주디PD 협업 영화 및 주요 필모그래피 (영화제 공식 링크 연동)
   const films = [
     {
       id: 'film-1',
@@ -16,6 +16,10 @@ export default function PortfolioShowcaseSection() {
       director: '박일 감독',
       role: '이경숙 (주디PD) · 편집 & AI OST 작곡 및 사운드 총괄',
       story: '장애인 자립생활센터에서 영화 수업 중 알게 된 늦깎이 커플(권홍민·소다희)의 감동적인 사연을 영화 촬영과 연계해 따뜻한 결혼식을 선물하는 가슴 뭉클한 실화 재구성작.',
+      festivalUrl: 'http://yisff.kr/',
+      festivalName: '예천국제스마트폰영화제 공식홈',
+      articleUrl: 'https://www.y-cnews.com/news/articleView.html?idxno=27849',
+      articleName: '영천뉴스 수상보도',
       youtubeUrl: 'https://www.youtube.com/watch?v=m3zheRF44LE',
       tag: '작품상 수상작',
       color: 'border-blue-500/40 bg-blue-950/30 text-blue-300'
@@ -29,7 +33,10 @@ export default function PortfolioShowcaseSection() {
       director: '박일 감독',
       role: '이경숙 (주디PD) · AI 미디어아트, 사운드 디자인 및 편집 총괄',
       story: '북촌 한옥마을의 고즈넉한 정취 속에서 노년의 우정과 지나온 삶의 궤적을 스마트폰 카메라와 따뜻한 AI 감성으로 포착한 시니어 힐링 시네마.',
-      youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
+      festivalUrl: 'http://yisff.kr/',
+      festivalName: '제8회 예천영화제 공식홈',
+      articleUrl: 'https://www.y-cnews.com/news/articleView.html?idxno=27849',
+      articleName: '박일 감독 출품기사',
       tag: '2026 최신 본선진출작',
       color: 'border-amber-500/40 bg-amber-950/30 text-amber-300'
     },
@@ -42,7 +49,10 @@ export default function PortfolioShowcaseSection() {
       director: '박일 감독',
       role: '이경숙 (주디PD) · 주연 출연, AI 음악 작곡 및 영화 총편집',
       story: '가수의 꿈을 품은 시니어 주인공이 생성형 AI 음악 기술을 만나 무대에 서며 제2의 인생을 노래하는 유쾌하고 벅찬 음악 단편영화.',
-      youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
+      festivalUrl: 'http://yisff.kr/',
+      festivalName: '예천국제스마트폰영화제',
+      youtubeUrl: 'https://www.youtube.com/shorts/mSbCUf4XUxw',
+      youtubeName: 'AI 꽃할배 숏츠영상',
       tag: '장려상 수상작',
       color: 'border-emerald-500/40 bg-emerald-950/30 text-emerald-300'
     },
@@ -55,7 +65,8 @@ export default function PortfolioShowcaseSection() {
       director: '박일 감독',
       role: '이경숙 (주디PD) · 출연 및 AI 미디어 편집',
       story: '노년의 일상 속 떠나간 이들의 빈자리를 담담하게 응시하며, 남겨진 기억과 그리움의 온기를 조명한 서정적 드라마.',
-      youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
+      festivalUrl: 'http://yisff.kr/',
+      festivalName: '제6회 예천영화제 공식홈',
       tag: '2023 파트너십 첫 수상',
       color: 'border-purple-500/40 bg-purple-950/30 text-purple-300'
     },
@@ -68,7 +79,10 @@ export default function PortfolioShowcaseSection() {
       director: '시니어 영화제작 커뮤니티 (박일 감독, 주디PD 참여)',
       role: '이경숙 (주디PD) · 주연 출연 및 영화 제작·편집 주도',
       story: '3·1 만세운동 당시 수원 기생들을 이끌고 독립운동을 주도했던 기생 출신 여성독립운동가 김향화의 생애와 서대문형무소 옥고의 역사를 기리는 역사 극영화.',
-      youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
+      festivalUrl: 'https://seoulnoin.or.kr/',
+      festivalName: '서울국제노인영화제 공식홈',
+      articleUrl: 'https://50plus.or.kr/',
+      articleName: '50플러스 제작기록',
       tag: '국제노인영화제 본선',
       color: 'border-rose-500/40 bg-rose-950/30 text-rose-300'
     },
@@ -81,7 +95,10 @@ export default function PortfolioShowcaseSection() {
       director: '주디PD 총괄',
       role: '이경숙 (주디PD) · 극본 집필, AI 음악 작곡 및 영상 총편집',
       story: '시간을 초월한 가족의 사랑과 그리움을 AI 사운드스케이프와 감각적인 컷 편집으로 완성하여 해외 영화제 심사위원들의 극찬을 받은 수작.',
+      festivalUrl: 'https://www.kcmf.or.kr/',
+      festivalName: '시청자미디어재단 포털',
       youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
+      youtubeName: '주디AI스튜디오 공식채널',
       tag: '글로벌 극본상 & 정부포상',
       color: 'border-cyan-500/40 bg-cyan-950/30 text-cyan-300'
     }
@@ -196,10 +213,11 @@ export default function PortfolioShowcaseSection() {
           </div>
         </div>
 
-        {/* 3. [특별 기획] 박일 감독 X 주디PD 시네마틱 파트너십 하이라이트 배너 */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border border-blue-500/30 shadow-2xl space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-700/80 pb-6">
-            <div className="space-y-1.5">
+        {/* 3. [특별 기획] 박일 감독 X 주디PD 시네마틱 파트너십 하이라이트 배너 & 영화제 공식 연동 허브 */}
+        <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-blue-950 via-slate-900 to-indigo-950 border border-blue-500/30 shadow-2xl space-y-8">
+          
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-b border-slate-700/80 pb-6">
+            <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold border border-blue-500/30">
                 <Clapperboard className="w-3.5 h-3.5 text-amber-400" />
                 <span>CINEMATIC PARTNERSHIP (2023 - 2026)</span>
@@ -209,29 +227,55 @@ export default function PortfolioShowcaseSection() {
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl">
                 80대 원로 방송작가 박일 감독님의 깊이 있는 시나리오와 연출, 그리고 주디PD의 감성 AI 작곡·사운드 믹싱·영상 총편집이 만나 
-                예천국제스마트폰영화제 작품상·장려상 및 국제영화제 극본상 등 수많은 기적을 함께 일궈냈습니다.
+                <strong> 예천국제스마트폰영화제(YISFF)</strong> 작품상·장려상 및 <strong>서울국제노인영화제(SISFF)</strong> 본선 진출 등 수많은 기적을 함께 일궈냈습니다.
               </p>
             </div>
 
-            <div className="flex-shrink-0">
+            {/* 공식 영화제 바로가기 퀵 허브 */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href="http://yisff.kr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all hover:scale-105"
+                title="예천국제스마트폰영화제 공식 홈페이지"
+              >
+                <Film className="w-3.5 h-3.5 text-amber-400" />
+                <span>예천영화제 공식홈 (yisff.kr)</span>
+                <ExternalLink className="w-3 h-3 text-slate-400" />
+              </a>
+
+              <a
+                href="https://seoulnoin.or.kr/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition-all hover:scale-105"
+                title="서울국제노인영화제 공식 홈페이지"
+              >
+                <Award className="w-3.5 h-3.5 text-rose-400" />
+                <span>서울국제노인영화제 (seoulnoin.or.kr)</span>
+                <ExternalLink className="w-3 h-3 text-slate-400" />
+              </a>
+
               <a
                 href="https://www.youtube.com/watch?v=m3zheRF44LE"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition-all hover:scale-105"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition-all hover:scale-105"
+                title="유튜브에서 지각결혼식 영상 감상"
               >
-                <Play className="w-4 h-4 fill-white" />
-                <span>《지각결혼식》 작품영상 보기</span>
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>《지각결혼식》 작품영상</span>
               </a>
             </div>
           </div>
 
-          {/* 6편의 대표 영화 카드 그리드 */}
+          {/* 6편의 대표 영화 카드 그리드 (영화제 및 영상 링크 완벽 연동) */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
             {films.map((film) => (
               <div
                 key={film.id}
-                className="rounded-2xl p-6 bg-slate-900/90 border border-slate-800 hover:border-slate-600 transition-all space-y-4 flex flex-col justify-between group shadow-md"
+                className="rounded-3xl p-6 bg-slate-900/90 border border-slate-800 hover:border-slate-600 transition-all space-y-4 flex flex-col justify-between group shadow-md"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -265,17 +309,53 @@ export default function PortfolioShowcaseSection() {
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-                  <a
-                    href={film.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-400 hover:text-blue-300 group-hover:underline"
-                  >
-                    <span>관련 영상 / 기록 보기</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  <span className="text-[10px] text-slate-500 font-mono">박일 × 주디</span>
+                {/* 영화별 공식 영화제 및 영상/기사 링크 버튼 그룹 */}
+                <div className="pt-3 border-t border-slate-800 space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {film.festivalUrl && (
+                      <a
+                        href={film.festivalUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium border border-slate-700 transition-colors"
+                      >
+                        <Film className="w-3 h-3 text-amber-400" />
+                        <span>{film.festivalName}</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                      </a>
+                    )}
+
+                    {film.articleUrl && (
+                      <a
+                        href={film.articleUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-medium border border-slate-700 transition-colors"
+                      >
+                        <Newspaper className="w-3 h-3 text-blue-400" />
+                        <span>{film.articleName}</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                      </a>
+                    )}
+
+                    {film.youtubeUrl && (
+                      <a
+                        href={film.youtubeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-950/60 hover:bg-red-900/80 text-red-200 text-[11px] font-bold border border-red-800/50 transition-colors"
+                      >
+                        <Play className="w-3 h-3 fill-red-400 text-red-400" />
+                        <span>{film.youtubeName || '작품영상 감상'}</span>
+                        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                      </a>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1">
+                    <span>박일 × 주디PD</span>
+                    <span className="text-slate-400">공식 출품 및 수상작</span>
+                  </div>
                 </div>
               </div>
             ))}
