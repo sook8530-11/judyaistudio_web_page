@@ -53,8 +53,10 @@ export default function HeroSection({ onOpenConsulting }) {
         {/* 상단 미니 뱃지 */}
         <div className="pointer-events-auto cursor-default mb-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 text-xs font-medium text-white/95 shadow-lg tracking-wide transition-colors">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>경험을 수익으로 바꾸는 AI 지식 비즈니스 본진</span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+            <span className="font-bold">[주디; 주인공을 디자인하다]</span>
+            <span className="opacity-40">|</span>
+            <span className="text-emerald-300">구글 제미나이 티쳐 트레이너 & 영화제 6관왕</span>
           </div>
         </div>
 
@@ -69,11 +71,11 @@ export default function HeroSection({ onOpenConsulting }) {
         </div>
 
         {/* 서브 카피 & 액션 버튼 */}
-        <div className="mt-5 flex flex-col items-center gap-5 pointer-events-auto max-w-lg">
-          <p className="text-white/85 text-sm sm:text-base leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] px-4 font-normal">
-            30대 직장인부터 퇴사자·은퇴자까지. <br />
-            남의 플랫폼에 기대지 않고 내 이름으로 시작하는 <br className="hidden sm:inline" />
-            과장 없는 실전 VOD와 1:1 밀착 코칭
+        <div className="mt-5 flex flex-col items-center gap-5 pointer-events-auto max-w-xl">
+          <p className="text-white/90 text-sm sm:text-base leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] px-4 font-normal">
+            <span className="text-amber-300 font-bold font-mono">“Meaning makes Intelligence.”</span> <br />
+            사람의 감정과 이야기를 담은 따뜻한 AI로, <br className="hidden sm:inline" />
+            여러분이 초고령화와 AX(AI 전환) 시대의 진정한 <strong>‘주인공’</strong>이 되도록 함께합니다.
           </p>
 
           {/* 알약 형태의 글래스모피즘 버튼 그룹 */}

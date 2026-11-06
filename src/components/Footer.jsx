@@ -39,48 +39,57 @@ export default function Footer({ onOpenNewsletter, onOpenAdminLogin }) {
 
           <div className="md:col-span-7 flex flex-col sm:flex-row justify-between gap-6">
             <div>
-              <div className="text-white font-bold mb-3 text-sm">바로가기</div>
+              <div className="text-white font-bold mb-3 text-sm">주요 바로가기</div>
               <ul className="space-y-2">
-                <li><a href="#philosophy" className="hover:text-white transition-colors">철학과 약속</a></li>
+                <li><a href="#philosophy" className="hover:text-white transition-colors">주디의 철학과 약속</a></li>
+                <li><a href="#portfolio" className="hover:text-amber-300 font-bold transition-colors">영화제 수상 & 출간작</a></li>
                 <li><a href="#programs" className="hover:text-white transition-colors">VOD & 코칭 프로그램</a></li>
-                <li><a href="#reviews" className="hover:text-white transition-colors">수강생 후기</a></li>
-                <li>
-                  <button onClick={onOpenNewsletter} className="text-amber-400 hover:text-amber-300 font-bold transition-colors">
-                    뉴스레터 구독 신청
-                  </button>
-                </li>
-                <li><a href="#faq" className="hover:text-white transition-colors">자주 묻는 질문</a></li>
+                <li><a href="#reviews" className="hover:text-white transition-colors">수강생 실전 후기</a></li>
+                <li><a href="#free-guide" className="hover:text-white transition-colors">무료 가이드북 뷰어</a></li>
               </ul>
             </div>
 
             <div>
-              <div className="text-white font-bold mb-3 text-sm">신뢰 정책 & 약관</div>
+              <div className="text-white font-bold mb-3 text-sm">공식 채널 & 포트폴리오</div>
               <ul className="space-y-2">
                 <li>
-                  <button onClick={() => setActiveModal('refund')} className="hover:text-white transition-colors text-amber-400 font-semibold">
-                    투명한 환불 정책
-                  </button>
+                  <a href="https://open.kakao.com/o/s9pKViBg" target="_blank" rel="noopener noreferrer" className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-amber-300 font-bold">
+                    <span>카카오톡 1:1 오픈채팅</span>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => setActiveModal('terms')} className="hover:text-white transition-colors">
-                    서비스 이용약관
-                  </button>
+                  <a href="https://www.instagram.com/populstory/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    인스타그램 (@populstory)
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => setActiveModal('privacy')} className="hover:text-white transition-colors">
-                    개인정보처리방침
-                  </button>
+                  <a href="https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    유튜브 공식 채널
+                  </a>
+                </li>
+                <li>
+                  <a href="https://litt.ly/judyaistudio" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    리틀리 (Litt.ly) 프로필
+                  </a>
+                </li>
+                <li>
+                  <a href="https://sites.google.com/view/digitalportfolio-judy/%ED%99%88?authuser=0" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                    구글 공식 포트폴리오
+                  </a>
                 </li>
               </ul>
             </div>
 
             <div>
-              <div className="text-white font-bold mb-3 text-sm">고객 지원 & 상담</div>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                평일 10:00 - 18:00 (주말/공휴일 휴무)<br />
-                상담 문의: support@judiaistudio.com<br />
-                카카오톡: @주디AI스튜디오
-              </p>
+              <div className="text-white font-bold mb-3 text-sm">교육 상담 & 기관 연수 문의</div>
+              <div className="text-xs text-slate-300 leading-relaxed space-y-1">
+                <div><strong>직통 전화:</strong> 010-4738-7094</div>
+                <div><strong>공식 이메일:</strong> judyaistudio@gmail.com</div>
+                <div className="text-[11px] text-slate-400 pt-1">
+                  학교·기관·기업 맞춤형 AI 연수 및 특강<br />
+                  전국 교육청 교사연수 채택 강사
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -89,10 +98,10 @@ export default function Footer({ onOpenNewsletter, onOpenAdminLogin }) {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <div className="space-y-1 text-center sm:text-left">
             <div>
-              상호: 주디AI스튜디오 | 대표자: 주디 | 사업자등록번호: 000-00-00000 | 통신판매업신고: 제2026-서울강남-0000호
+              상호: 주디AI스튜디오 | 대표자: 이경숙 (Judy PD) | 교육상담: 010-4738-7094 | 문의: judyaistudio@gmail.com
             </div>
             <div>
-              주소: 서울특별시 강남구 테헤란로 000 주디AI스튜디오 | 개인정보보호책임자: 주디
+              분야: AI융합교육 · 감성 콘텐츠 프로듀싱 · 의미 중심 교육창업학(Meaning-Centered Edupreneurship)
             </div>
             <div className="pt-1 text-slate-400 flex items-center justify-center sm:justify-start gap-2">
               <span>Copyright © 2026 주디AI스튜디오 (Judy AI Studio). All rights reserved.</span>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, HeartHandshake, CheckCircle2, Shield, Star, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Eye, HeartHandshake, CheckCircle2, Shield, Star, ShieldCheck, ArrowRight, Award, BookOpen, GraduationCap } from 'lucide-react';
 
 export default function PhilosophySection({ onOpenConsulting }) {
   const pillars = [
@@ -7,68 +7,75 @@ export default function PhilosophySection({ onOpenConsulting }) {
       icon: Eye,
       title: '과장 없는 정직한 설명과 투명한 공개',
       subtitle: 'HONEST & TRANSPARENT',
-      desc: '자극적인 매출 수치나 뜬구름 잡는 환상을 심지 않습니다. 대표의 실제 얼굴과 이름을 내걸고, 커리큘럼과 가격을 투명하게 공개하여 방문자의 의심을 단단한 확신으로 바꿉니다.',
+      desc: '자극적인 매출 수치나 뜬구름 잡는 환상을 심지 않습니다. 대표의 실제 얼굴과 본명(이경숙), 9년간의 실전 포트폴리오를 투명하게 공개하여 수강생의 막연한 불안을 단단한 확신으로 바꿉니다.',
       tag: '투명성 100%'
     },
     {
       icon: HeartHandshake,
-      title: '한 사람 한 사람과의 진심 어린 1:1 소통',
+      title: '한 사람 한 사람과의 진심 어린 눈맞춤 교육',
       subtitle: '1:1 AUTHENTIC CONNECTION',
-      desc: '기계적으로 동영상만 파는 곳이 아닙니다. 시작 전 진단 상담부터 1:1 맞춤 코칭까지, 수강생이 마주한 구체적인 고민과 상황에 맞춰 가장 현실적인 길을 함께 찾습니다.',
+      desc: '기계적으로 동영상만 파는 곳이 아닙니다. 시작 전 진단 상담부터 1:1 맞춤 코칭까지, 수강생이 마주한 구체적인 삶의 경험과 고민에 귀 기울이며 인생 2막의 주인공이 되도록 함께 뜁니다.',
       tag: '진솔한 소통'
     },
     {
       icon: CheckCircle2,
-      title: '현장에서 검증된 타협 없는 실전 품질',
+      title: '영화제 6관왕·출간 작가로 검증된 실전 품질',
       subtitle: 'VERIFIED PRACTICAL QUALITY',
-      desc: '어디서나 볼 수 있는 흔한 이론은 뺍니다. 실제 AI 툴과 지식 상품화 현장에서 직접 부딪치며 검증된 실무 노하우만을 압축하여 당장 내일 써먹을 수 있는 결과물을 만듭니다.',
-      tag: '실전 적용'
+      desc: '이론만 읊는 AI 강의는 사양합니다. 국내외 영화제 극본상·작품상 수상작과 교보문고 정식 출간 도서로 입증된 고품격 미디어아트 및 출판 창작 노하우만을 압축하여 당장 손에 잡히는 결과물로 증명합니다.',
+      tag: '실전 결과물'
     }
   ];
 
   return (
-    <section id="philosophy" className="py-24 bg-white border-t border-slate-200/80">
+    <section id="philosophy" className="py-24 bg-white border-t border-slate-200/80 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         
-        {/* 1. 주디 대표 프로필 & 진솔한 약속 카드 */}
+        {/* 1. 이경숙 (Judy PD) 대표 프로필 & 진솔한 철학 카드 */}
         <div className="bg-judiaistudio-background rounded-3xl p-8 sm:p-12 border border-slate-200/90 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           <div className="lg:col-span-4 flex flex-col items-center text-center">
             <div className="relative mb-4">
-              <div className="w-28 h-28 rounded-3xl bg-gradient-to-tr from-judiaistudio-royalBlue via-blue-600 to-indigo-600 flex items-center justify-center text-white text-4xl font-extrabold shadow-xl shadow-judiaistudio-royalBlue/25 border-4 border-white">
-                주디
+              <div className="w-28 h-28 rounded-3xl bg-gradient-to-tr from-judiaistudio-royalBlue via-blue-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-extrabold shadow-xl shadow-judiaistudio-royalBlue/25 border-4 border-white">
+                주디PD
               </div>
               <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center" title="1:1 상담 가능">
                 <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-judiaistudio-textMain">주디 대표</h3>
-            <p className="text-xs text-judiaistudio-textSub mt-1">AI 지식 비즈니스 아키텍트 & 1:1 멘토</p>
-            <div className="flex items-center gap-1 mt-2 text-judiaistudio-gold text-xs font-semibold">
-              <Star className="w-4 h-4 fill-judiaistudio-gold text-judiaistudio-gold" />
-              <span>상담 만족도 99.4%</span>
+            
+            <h3 className="text-2xl font-black text-judiaistudio-textMain">이경숙 (Judy PD)</h3>
+            <p className="text-xs text-judiaistudio-royalBlue font-bold mt-1">감성 콘텐츠 프로듀서 · AI융합교육학 연구자</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">구글 제미나이 공인 티쳐 트레이너 · NCS 확인강사</p>
+
+            <div className="flex items-center gap-1 mt-3 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold border border-amber-200">
+              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+              <span>상담 및 연수 만족도 99.8%</span>
             </div>
           </div>
 
           <div className="lg:col-span-8 space-y-5">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-judiaistudio-royalBlue text-xs font-bold font-mono">
               <Shield className="w-3.5 h-3.5 text-judiaistudio-gold" />
-              DIRECTOR'S PLEDGE
+              DIRECTOR'S PHILOSOPHY
             </div>
+
             <blockquote className="text-base sm:text-lg font-medium text-judiaistudio-textMain leading-relaxed italic bg-white p-5 rounded-2xl border-l-4 border-judiaistudio-royalBlue shadow-sm">
-              "남의 플랫폼에서 휘둘리지 않고, 나만의 경험이 가장 강력한 자산이 되도록 가장 가까이에서 정직하게 돕겠습니다. 과장 없이, 오직 결과로 증명합니다."
+              “AI는 인간을 대신하는 기술이 아니라, 인간의 의미를 세상과 연결하는 따뜻한 동반자입니다.<br className="hidden sm:inline" />
+              교육과 창작의 경계를 허물고, 여러분이 AX(AI 전환) 시대의 당당한 주인공이 되도록 가장 가까이에서 손을 잡겠습니다.”
             </blockquote>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-judiaistudio-textSub">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>30대·퇴사·은퇴 맞춤 로드맵</span>
+
+            {/* 대표 약력 뱃지 그리드 */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-judiaistudio-textSub pt-1">
+              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+                <Award className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                <span>국내외 영화제 수상 6관왕</span>
               </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>검증된 실전 VOD 커리큘럼</span>
+              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+                <BookOpen className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                <span>교보문고 출간 작가 (《모두의 식탁》)</span>
               </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>수강 전 취소 100% 전액 환불</span>
+              <div className="flex items-center gap-2 bg-white/60 p-2.5 rounded-xl border border-slate-100">
+                <GraduationCap className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>전국 교육청 교사연수 채택 강사</span>
               </div>
             </div>
           </div>
@@ -84,7 +91,7 @@ export default function PhilosophySection({ onOpenConsulting }) {
             <span className="text-judiaistudio-royalBlue">주디AI스튜디오의 3대 약속</span>
           </h2>
           <p className="text-base sm:text-lg text-judiaistudio-textSub">
-            SNS와 오픈채팅의 일회성을 넘어, 여러분이 평생 믿고 기댈 수 있는 단단한 비즈니스 파트너가 되겠습니다.
+            [주디; 주인공을 디자인하다] — 누구나 스스로의 가능성을 깨우고 AI로 창작과 수익을 실현하는 길을 안내합니다.
           </p>
         </div>
 
@@ -99,30 +106,23 @@ export default function PhilosophySection({ onOpenConsulting }) {
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center justify-center text-judiaistudio-royalBlue group-hover:bg-judiaistudio-royalBlue group-hover:text-white transition-colors">
-                      <Icon className="w-7 h-7" />
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200/80 flex items-center justify-center text-judiaistudio-royalBlue group-hover:bg-judiaistudio-royalBlue group-hover:text-white transition-colors shadow-sm">
+                      <Icon className="w-6 h-6" />
                     </div>
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-judiaistudio-goldLight text-judiaistudio-gold">
+                    <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-white text-slate-500 border border-slate-200">
                       {item.tag}
                     </span>
                   </div>
 
-                  <div className="text-[11px] font-mono font-bold tracking-wider text-judiaistudio-textSub uppercase mb-1">
+                  <div className="text-[11px] font-mono font-bold text-judiaistudio-gold uppercase tracking-wider mb-1">
                     {item.subtitle}
                   </div>
-
-                  <h3 className="text-xl font-bold text-judiaistudio-textMain mb-3 group-hover:text-judiaistudio-royalBlue transition-colors leading-snug">
+                  <h3 className="text-lg font-bold text-judiaistudio-textMain mb-3 group-hover:text-judiaistudio-royalBlue transition-colors">
                     {item.title}
                   </h3>
-
-                  <p className="text-sm text-judiaistudio-textSub leading-relaxed">
+                  <p className="text-xs sm:text-sm text-judiaistudio-textSub leading-relaxed">
                     {item.desc}
                   </p>
-                </div>
-
-                <div className="pt-6 mt-6 border-t border-slate-200/60 flex items-center gap-2 text-xs font-semibold text-judiaistudio-royalBlue">
-                  <span className="w-2 h-2 rounded-full bg-judiaistudio-gold"></span>
-                  <span>주디 대표 약속 원칙 #{idx + 1}</span>
                 </div>
               </div>
             );

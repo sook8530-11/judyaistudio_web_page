@@ -62,7 +62,10 @@ export default function Header({
               isDarkHero ? 'text-white/80' : 'text-slate-600'
             }`}>
               <a href="#hero" className="hover:text-judiaistudio-royalBlue transition-colors">홈</a>
-              <a href="#philosophy" className="hover:text-judiaistudio-royalBlue transition-colors">3대 철학</a>
+              <a href="#philosophy" className="hover:text-judiaistudio-royalBlue transition-colors">주디의 철학</a>
+              <a href="#portfolio" className="hover:text-amber-400 transition-colors font-bold text-amber-300 flex items-center gap-1">
+                <span>작품 & 수상실적</span>
+              </a>
               <a href="#programs" className="hover:text-judiaistudio-royalBlue transition-colors font-bold text-judiaistudio-royalBlue">
                 프로그램 라인업
               </a>
@@ -232,7 +235,14 @@ export default function Header({
               onClick={() => setMobileMenuOpen(false)}
               className="hover:text-judiaistudio-royalBlue py-1"
             >
-              3대 철학
+              주디의 철학과 약속
+            </a>
+            <a 
+              href="#portfolio" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-amber-300 py-1 text-amber-400 font-bold"
+            >
+              영화제 수상 & 작품 실적
             </a>
             <a 
               href="#programs" 

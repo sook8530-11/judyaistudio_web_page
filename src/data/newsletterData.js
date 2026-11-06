@@ -85,3 +85,4 @@ export const NEWSLETTER_ISSUES = [
     actionTip: "나의 시간 1시간을 타인의 문제 해결에 쓸 준비가 되었다면, 주저 없이 코칭 프로그램을 열어보세요."
   }
 ];
+

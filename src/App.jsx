@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import PhilosophySection from './components/PhilosophySection';
+import PortfolioShowcaseSection from './components/PortfolioShowcaseSection';
 import ProgramsPreview from './components/ProgramsPreview';
 import ReviewMarquee from './components/ReviewMarquee';
 import FreeGuideSection from './components/FreeGuideSection';
@@ -257,6 +258,9 @@ export default function App() {
 
           {/* 3대 철학 기둥 섹션 (대표 프로필 포함) */}
           <PhilosophySection onOpenConsulting={() => setIsConsultingOpen(true)} />
+
+          {/* 영화제 수상 & 교보문고 출간작 포트폴리오 쇼케이스 섹션 */}
+          <PortfolioShowcaseSection />
 
           {/* 실전 프로그램 라인업 (1:1 정사각 썸네일, 수강생에게는 수정/삭제 버튼 전혀 없는 순수 진열) */}
           <ProgramsPreview

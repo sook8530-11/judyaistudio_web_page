@@ -56,56 +56,88 @@ const DEFAULT_CONSULTING_REQUESTS = [
   }
 ];
 
-// 초기 기본 상품 데이터 (기획서 기반)
+// 초기 기본 상품 데이터 (주디 대표 실제 포트폴리오 및 기획서 연동)
 const DEFAULT_PRODUCTS = [
   {
     id: 'prod-1',
-    title: 'AI 지식 비즈니스 실전 마스터 코스',
-    category: 'VOD',
-    price: 245000,
-    originalPrice: 350000,
-    badge: '얼리버드 30%',
-    summary: '아이디어 발굴부터 독립 홈페이지 런칭까지 한 번에 끝내는 평생 소장 VOD',
-    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
+    title: '동화집 《모두의 식탁》 & AI 동화작가 양성 실전 마스터',
+    category: '전자책',
+    price: 35000,
+    originalPrice: 50000,
+    badge: '교보문고 정식 출간',
+    summary: '교보문고 출간 작가 주디PD가 직접 전수하는 생성형 AI 동화책·스토리텔링 기획부터 출판 유통까지의 전 과정',
+    thumbnail: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80',
     createdAt: '2026-11-01',
     contentBlocks: [
-      { id: 'b1', type: 'h1', text: '당신의 30년 경험이 가장 강력한 자산이 됩니다', align: 'center', highlight: 'yellow' },
-      { id: 'b2', type: 'p', text: '남의 플랫폼에서 수수료 떼이고 고객 명단도 잃어버리는 일은 이제 그만하세요. 주디AI스튜디오는 ChatGPT와 Claude를 활용해 혼자서도 1일 만에 나만의 독립 강의 본진을 구축하는 실전 노하우를 전달합니다.', align: 'left', highlight: 'none' },
-      { id: 'b3', type: 'image', url: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600&auto=format&fit=crop&q=80', caption: '실전 커리큘럼 화면' },
-      { id: 'b4', type: 'h2', text: '검증된 4단계 실무 커리큘럼', align: 'left', highlight: 'green' },
-      { id: 'b5', type: 'p', text: '01단계: 경험 발굴 및 킬러 컨셉 정의\n02단계: AI 기반 지식 콘텐츠 및 전자책 기획\n03단계: 독립형 브랜드 홈 구축 및 결제 세팅\n04단계: 1:1 상담 파이프라인으로 첫 결제 창출', align: 'left', highlight: 'none' }
+      { id: 'b1', type: 'h1', text: '누구나 나만의 이야기를 가진 동화 작가가 될 수 있습니다', align: 'center', highlight: 'yellow' },
+      { id: 'b2', type: 'p', text: '교보문고, 예스24 등 전국 서점에 정식 출간된 동화집 《모두의 식탁》의 기획부터 생성형 AI 삽화 제작, 스토리텔링 구조화, 출판 등록까지의 모든 실전 노하우를 담았습니다. 초보자도 1주일 만에 나만의 동화책을 완성할 수 있습니다.', align: 'left', highlight: 'none' },
+      { id: 'b3', type: 'image', url: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&auto=format&fit=crop&q=80', caption: '실제 출간 동화책 샘플' },
+      { id: 'b4', type: 'h2', text: '동화작가 양성 코스 4대 커리큘럼', align: 'left', highlight: 'green' },
+      { id: 'b5', type: 'p', text: '01단계: 감성 스토리 발굴 및 플롯 설계 (AI 질문법)\n02단계: Midjourney / DALL-E 스타일 일관성 유지 삽화 생성\n03단계: 오디오북 더빙 및 전자책(EPUB/PDF) 변환\n04단계: ISBN 발급 및 정식 서점 유통·수익화 로드맵', align: 'left', highlight: 'none' }
     ]
   },
   {
     id: 'prod-2',
-    title: '지식 비즈니스 1:1 프라이빗 코칭 (90분)',
-    category: '1:1코칭',
-    price: 190000,
-    originalPrice: 300000,
-    badge: '월 선착순 5팀',
-    summary: '주디 대표가 1:1로 직접 내 비즈니스 컨셉을 진단하고 설계해 주는 90분 집중 세션',
-    thumbnail: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80',
+    title: '스마트폰 영화제 6관왕 노하우: AI 영화 & 뮤직비디오 창작 VOD',
+    category: 'VOD',
+    price: 189000,
+    originalPrice: 280000,
+    badge: '영화제 수상작 메이킹',
+    summary: '시청자미디어대상, 로마 국제영화제 극본상 수상작 <그리움>, <지각결혼식>의 AI 음악 작곡 및 영상 총편집 비법',
+    thumbnail: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=600&auto=format&fit=crop&q=80',
     createdAt: '2026-11-02',
     contentBlocks: [
-      { id: 'b1', type: 'h1', text: '밀착 진단으로 헤매는 시간 1년을 아껴드립니다', align: 'center', highlight: 'yellow' },
-      { id: 'b2', type: 'p', text: '사전 정밀 설문지를 바탕으로 주디 대표가 수강생님의 백그라운드를 분석한 뒤, 90분간 1:1 줌 세션으로 만납니다. 뜬구름 잡는 조언이 아닌 현장에서 바로 사용할 카피와 커리큘럼을 함께 완성합니다.', align: 'left', highlight: 'none' },
-      { id: 'b3', type: 'h2', text: '코칭 세션 4대 특전', align: 'left', highlight: 'green' },
-      { id: 'b4', type: 'p', text: '• 사전 정밀 설문지 분석 보고서\n• Zoom 90분 세션 녹화본 평생 소장\n• 지식 상품 기획서 & 카피라이팅 템플릿 증정\n• 세션 종료 후 2주간 1:1 Q&A 채널 오픈', align: 'left', highlight: 'none' }
+      { id: 'b1', type: 'h1', text: '장비 0원, 스마트폰과 AI만으로 영화제 수상작을 만듭니다', align: 'center', highlight: 'yellow' },
+      { id: 'b2', type: 'p', text: '패럴스마트폰영화제 개막작 <지각결혼식>과 이태리 로마 국제영화제 극본상 수상작 <그리움>을 제작한 실제 워크플로우를 그대로 공개합니다. AI 작곡(Suno/Udio)으로 맞춤 OST를 뽑고, 생성형 영상과 스마트폰 촬영을 결합하는 마법 같은 테크닉을 배웁니다.', align: 'left', highlight: 'none' },
+      { id: 'b3', type: 'h2', text: 'VOD 핵심 수강 혜택', align: 'left', highlight: 'green' },
+      { id: 'b4', type: 'p', text: '• 스마트폰 영화 및 뮤직비디오 콘티 템플릿\n• 시네마틱 프롬프트 사전 50선 제공\n• 실제 영화제 출품 및 수상 전략 가이드북 증정', align: 'left', highlight: 'none' }
     ]
   },
   {
     id: 'prod-3',
-    title: '내 경험을 돈으로 바꾸는 AI 지식 스타터킷 (PDF)',
+    title: '이경숙 대표의 인생 2막 1:1 맞춤형 AI 지식창업 코칭 (90분)',
+    category: '1:1코칭',
+    price: 220000,
+    originalPrice: 350000,
+    badge: '월 선착순 5팀',
+    summary: '구글 제미나이 티쳐 트레이너 주디PD가 1:1로 직접 내 경험을 분석하고 나만의 지식 상품 본진을 설계해 드립니다',
+    thumbnail: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80',
+    createdAt: '2026-11-03',
+    contentBlocks: [
+      { id: 'b1', type: 'h1', text: '주디; 주인공을 디자인하다 — 당신의 인생 2막을 함께 설계합니다', align: 'center', highlight: 'yellow' },
+      { id: 'b2', type: 'p', text: '사전 정밀 설문지를 통해 수강생님의 20~30년 경력과 관심사를 면밀히 분석한 후, 90분간 1:1 Zoom 세션으로 진행됩니다. "무엇을 팔아야 할지", "어떻게 브랜딩해야 할지" 막막했던 안개를 단 90분 만에 걷어내 드립니다.', align: 'left', highlight: 'none' },
+      { id: 'b3', type: 'h2', text: '1:1 밀착 코칭 특전', align: 'left', highlight: 'green' },
+      { id: 'b4', type: 'p', text: '• 사전 배경 분석 리포트 및 맞춤형 지식 상품 기획안\n• 90분 줌 녹화본 평생 소장\n• 세션 종료 후 2주간 주디PD 카카오톡 1:1 Q&A 직통 채널 제공', align: 'left', highlight: 'none' }
+    ]
+  },
+  {
+    id: 'prod-4',
+    title: '《푸른 별을 되찾은 어린왕자와 사막여우》 오디오북 & 컬러링북',
+    category: '전자책',
+    price: 19000,
+    originalPrice: 30000,
+    badge: '인기 멀티미디어',
+    summary: 'AI 일러스트 삽화와 고품질 오디오 더빙, 컬러링북이 하나로 융합된 감성 디지털 교육 콘텐츠',
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
+    createdAt: '2026-11-04',
+    contentBlocks: [
+      { id: 'b1', type: 'h1', text: 'AI와 인간의 따뜻한 교감이 빚어낸 융합 동화', align: 'center', highlight: 'yellow' },
+      { id: 'b2', type: 'p', text: '생성형 AI로 구현한 동화 삽화와 오디오 더빙, 직접 색칠할 수 있는 컬러링북 도안이 포함된 패키지입니다. 학교와 도서관, 복지관 등에서 뜨거운 반응을 얻은 교육용 융합 작품입니다.', align: 'left', highlight: 'none' }
+    ]
+  },
+  {
+    id: 'prod-5',
+    title: '내 경험을 돈으로 바꾸는 AI 지식 비즈니스 스타터킷 2026',
     category: '무료배포',
     price: 0,
     originalPrice: 50000,
-    badge: '100% 무료',
-    summary: '아이디어 선별 체크리스트 7가지와 VOD 커리큘럼 설계 공식이 담긴 특별 리포트',
+    badge: '1차 한정 무료배포',
+    summary: '아이디어 선별 7대 체크리스트와 커리큘럼 공식, 프롬프트 10선이 담긴 공식 1차 배포본 PDF',
     thumbnail: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80',
-    createdAt: '2026-11-03',
+    createdAt: '2026-11-05',
     contentBlocks: [
       { id: 'b1', type: 'h1', text: '결제 전에 가치를 먼저 무료로 확인하세요', align: 'center', highlight: 'yellow' },
-      { id: 'b2', type: 'p', text: '42페이지 분량의 핵심 요약본입니다. 내 경험 중 어떤 것이 실제 시장에서 결제되는지 자가 진단할 수 있는 7가지 체크리스트와 프롬프트 가이드를 무료로 다운로드하실 수 있습니다.', align: 'left', highlight: 'none' }
+      { id: 'b2', type: 'p', text: '주디 대표가 집필한 1차 한정 배포본 전문입니다. 내 경험 중 어떤 것이 실제 시장에서 팔릴 수 있는지 검증하는 7가지 체크리스트와 즉시 복사해 쓸 수 있는 프롬프트 10선을 제공합니다.', align: 'left', highlight: 'none' }
     ]
   }
 ];
