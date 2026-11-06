@@ -38,17 +38,17 @@ export default function Header({
         <div className="flex items-center justify-between">
           
           {/* Logo Brand */}
-          <a href="#" className="flex items-center gap-2 group cursor-pointer">
+          <a href="#" className="flex items-center gap-2 group cursor-pointer shrink-0">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-judiaistudio-royalBlue to-blue-500 flex items-center justify-center text-white shadow-md shadow-judiaistudio-royalBlue/20 group-hover:scale-105 transition-transform">
               <Sparkles className="w-5 h-5 text-judiaistudio-gold animate-pulse" />
             </div>
             <div className="flex flex-col">
-              <span className={`text-lg font-black tracking-tight leading-none ${
+              <span className={`text-lg font-black tracking-tight leading-none whitespace-nowrap ${
                 isDarkHero ? 'text-white' : 'text-judiaistudio-textMain'
               }`}>
                 JUDY <span className="text-judiaistudio-royalBlue font-extrabold">AI</span> STUDIO
               </span>
-              <span className={`text-[10px] font-mono tracking-widest uppercase mt-0.5 ${
+              <span className={`text-[10px] font-mono tracking-widest uppercase mt-0.5 whitespace-nowrap ${
                 isDarkHero ? 'text-slate-300' : 'text-slate-500'
               }`}>
                 Knowledge Business Lab
@@ -58,42 +58,41 @@ export default function Header({
 
           {/* Desktop Navigation Links */}
           {viewMode === 'home' && (
-            <nav className={`hidden lg:flex items-center gap-7 text-xs font-semibold ${
+            <nav className={`hidden lg:flex items-center gap-3.5 xl:gap-5 text-xs font-semibold ${
               isDarkHero ? 'text-white/80' : 'text-slate-600'
             }`}>
-              <a href="#hero" className="hover:text-judiaistudio-royalBlue transition-colors">홈</a>
-              <a href="#philosophy" className="hover:text-judiaistudio-royalBlue transition-colors">주디의 철학</a>
-              <a href="#portfolio" className="hover:text-amber-400 transition-colors font-bold text-amber-300 flex items-center gap-1">
+              <a href="#philosophy" className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue transition-colors">주디의 철학</a>
+              <a href="#portfolio" className="whitespace-nowrap shrink-0 hover:text-amber-400 transition-colors font-bold text-amber-300 flex items-center gap-1">
                 <span>작품 & 수상실적</span>
               </a>
-              <a href="#programs" className="hover:text-judiaistudio-royalBlue transition-colors font-bold text-judiaistudio-royalBlue">
-                프로그램 라인업
+              <a href="#programs" className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue transition-colors font-bold text-judiaistudio-royalBlue">
+                프로그램
               </a>
-              <a href="#reviews" className="hover:text-judiaistudio-royalBlue transition-colors">수강생 후기</a>
-              <a href="#free-guide" className="hover:text-judiaistudio-royalBlue transition-colors">무료 가이드</a>
-              <a href="#faq" className="hover:text-judiaistudio-royalBlue transition-colors">자주 묻는 질문</a>
+              <a href="#reviews" className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue transition-colors">수강생 후기</a>
+              <a href="#free-guide" className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue transition-colors">무료 가이드</a>
+              <a href="#faq" className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue transition-colors">자주 묻는 질문</a>
               
               {/* 상단 뉴스레터 팝업 열기 버튼 */}
               <button
                 type="button"
                 onClick={onOpenNewsletter}
-                className="hover:text-judiaistudio-royalBlue flex items-center gap-1 transition-colors text-amber-400 font-bold"
+                className="whitespace-nowrap shrink-0 hover:text-judiaistudio-royalBlue flex items-center gap-1 transition-colors text-amber-400 font-bold"
               >
                 <Mail className="w-3.5 h-3.5" />
-                <span>뉴스레터 구독</span>
+                <span>뉴스레터</span>
               </button>
             </nav>
           )}
 
-          {/* Right Action Buttons: 관리자모드 대신 [로그인], [회원가입] 버튼 배치 */}
-          <div className="hidden md:flex items-center gap-2.5">
+          {/* Right Action Buttons: 교육상담 및 계정 영역 */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             
             {/* 교육상담신청 버튼 */}
             {viewMode === 'home' && (
               <button
                 type="button"
                 onClick={onOpenConsulting}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold shadow-sm transition-all ${
+                className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition-all ${
                   scrolled
                     ? 'bg-judiaistudio-royalBlue text-white hover:bg-judiaistudio-royalBlueHover'
                     : 'bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/25'
@@ -104,13 +103,13 @@ export default function Header({
               </button>
             )}
 
-            {/* ⭐ 로그인 & 회원가입 버튼 영역 (비로그인 상태) */}
+            {/* 로그인 & 회원가입 버튼 영역 (비로그인 상태) */}
             {!currentUser ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={() => onOpenAuth('login')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                     isDarkHero
                       ? 'text-white/90 hover:text-white hover:bg-white/10'
                       : 'text-slate-700 hover:text-judiaistudio-royalBlue hover:bg-slate-100'
@@ -123,7 +122,7 @@ export default function Header({
                 <button
                   type="button"
                   onClick={() => onOpenAuth('signup')}
-                  className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm ${
+                  className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
                     isDarkHero
                       ? 'bg-white/20 hover:bg-white/30 text-white border border-white/30 backdrop-blur-md'
                       : 'bg-slate-900 hover:bg-black text-white'
@@ -134,41 +133,43 @@ export default function Header({
                 </button>
               </div>
             ) : (
-              /* 로그인 완료 상태: 사용자 정보 및 로그아웃 (관리자일 때만 관리자 모드 토글 노출) */
-              <div className="flex items-center gap-2">
+              /* 로그인 완료 상태: 관리자 전환 토글 및 사용자 뱃지 */
+              <div className="flex items-center gap-2 shrink-0">
                 
                 {currentUser.role === 'admin' && (
                   <button
                     type="button"
                     onClick={onToggleAdmin}
-                    className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all shadow-sm ${
+                    className={`whitespace-nowrap shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all shadow-sm ${
                       viewMode === 'admin'
                         ? 'bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20'
                         : isDarkHero
-                          ? 'bg-slate-800/90 text-amber-300 border-amber-300/40'
-                          : 'bg-slate-900 text-amber-300 border-slate-800'
+                          ? 'bg-slate-800/90 hover:bg-slate-800 text-amber-300 border-amber-300/40'
+                          : 'bg-slate-900 hover:bg-black text-amber-300 border-slate-800'
                     }`}
                     title="관리자 대시보드 / 고객 홈 전환"
                   >
                     {viewMode === 'admin' ? (
                       <>
                         <Home className="w-3.5 h-3.5" />
-                        <span>🏠 고객 모드</span>
+                        <span>고객 모드</span>
                       </>
                     ) : (
                       <>
-                        <Settings className="w-3.5 h-3.5" />
-                        <span>🛠️ 관리자 모드</span>
+                        <Settings className="w-3.5 h-3.5 text-amber-400" />
+                        <span>관리자 모드</span>
                       </>
                     )}
                   </button>
                 )}
 
-                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border ${
+                <div className={`whitespace-nowrap shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border ${
                   isDarkHero ? 'bg-slate-900/60 border-slate-700/60 text-white' : 'bg-slate-100 border-slate-200 text-slate-800'
                 }`}>
                   <User className="w-3.5 h-3.5 text-judiaistudio-gold" />
-                  <span className="text-xs font-bold">{currentUser.name}님</span>
+                  <span className="text-xs font-bold">
+                    {currentUser.name ? currentUser.name.replace(' (관리자)', '') : '주디 대표'}님
+                  </span>
                   <button
                     type="button"
                     onClick={onLogout}

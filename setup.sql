@@ -116,3 +116,4 @@ SELECT
     'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80',
     '주디 대표가 집필한 1차 한정 배포본 전문입니다. 내 경험 중 어떤 것이 실제 시장에서 팔릴 수 있는지 검증하는 7가지 체크리스트와 즉시 복사해 쓸 수 있는 프롬프트 10선을 제공합니다.'
 WHERE NOT EXISTS (SELECT 1 FROM public.products WHERE title = '내 경험을 돈으로 바꾸는 AI 지식 비즈니스 스타터킷 2026');
+

@@ -63,7 +63,7 @@ export default function HeroSection({ onOpenConsulting }) {
         {/* 웅장한 메인 타이틀 */}
         <div className="space-y-1 sm:space-y-2 pointer-events-auto cursor-default">
           <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold uppercase tracking-tighter text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.9)] select-none">
-            JUDI AI
+            JUDY AI
           </h1>
           <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight text-white/90 drop-shadow-[0_0_25px_rgba(0,0,0,0.9)] select-none -mt-2 sm:-mt-4">
             STUDIO
