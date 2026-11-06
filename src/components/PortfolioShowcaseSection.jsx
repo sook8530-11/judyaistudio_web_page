@@ -91,29 +91,44 @@ export default function PortfolioShowcaseSection() {
       title: '영화 《그리움》',
       year: '2024 / 2025',
       festival: '이태리·로마 국제영화제 극본상 수상 & 2025 시청자미디어대상 수상',
-      subFestival: '글로벌 국제영화제 공식 초청',
+      subFestival: '글로벌 국제영화제 공식 초청 및 대통령령 정부포상',
       director: '주디PD 총괄',
       role: '이경숙 (주디PD) · 극본 집필, AI 음악 작곡 및 영상 총편집',
       story: '시간을 초월한 가족의 사랑과 그리움을 AI 사운드스케이프와 감각적인 컷 편집으로 완성하여 해외 영화제 심사위원들의 극찬을 받은 수작.',
       festivalUrl: 'https://www.kcmf.or.kr/',
-      festivalName: '시청자미디어재단 포털',
-      youtubeUrl: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
-      youtubeName: '주디AI스튜디오 공식채널',
+      festivalName: '시청자미디어재단 수상공식',
+      articleUrl: 'https://www.kcmf.or.kr/',
+      articleName: '정부포상 기록',
       tag: '글로벌 극본상 & 정부포상',
       color: 'border-cyan-500/40 bg-cyan-950/30 text-cyan-300'
     }
   ];
 
-  // 실제 출간 도서 및 주요 프로젝트
+  // 실제 출간 도서 및 주요 프로젝트 (교보문고, 예스24 등 서점 판매처 및 원본 갤러리 직접 연동)
   const projects = [
+    {
+      id: 'p0',
+      type: 'BOOKS',
+      title: '《AX시대, 생성형 AI 활용 자동화 비법》',
+      category: '2024년 정식 출간 전문서 (미디어북 / 전국 서점 유통)',
+      desc: 'AI 트랜스포메이션(AX) 시대를 맞아 개인과 조직의 업무 효율과 창의성을 극대화하는 생성형 AI 자동화 지침서. 이경숙(주디PD) 공저.',
+      link: 'https://search.kyobobook.co.kr/search?keyword=AX%EC%8B%9C%EB%8C%80%20%EC%83%9D%EC%84%B1%ED%98%95%20AI%20%ED%99%9C%EC%9A%A9%20%EC%9E%90%EB%8F%99%ED%99%94%20%EB%B9%84%EB%B2%95',
+      linkText: '교보문고 구매처 바로가기',
+      subLink: 'https://www.yes24.com/Product/Search?domain=ALL&query=AX%EC%8B%9C%EB%8C%80%20%EC%83%9D%EC%84%B1%ED%98%95%20AI%20%ED%99%9C%EC%9A%A9%20%EC%9E%90%EB%8F%99%ED%99%94%20%EB%B9%84%EB%B2%95',
+      subLinkText: '예스24 서점 바로가기',
+      tag: '2024 최신 전문서',
+      icon: BookOpen
+    },
     {
       id: 'p1',
       type: 'BOOKS',
       title: '동화집 《모두의 식탁》',
-      category: '교보문고 정식 출간 (전자&종이책)',
+      category: '교보문고 정식 출간 (종이책 & 전자책 유통)',
       desc: '세대와 계층을 넘어 따뜻한 온기를 나누는 감성 스토리. 교보문고, 예스24 등 전국 서점 정식 유통.',
       link: 'http://product.kyobobook.co.kr/detail/S000219388169',
-      linkText: '교보문고 도서 구매 및 리뷰 보기',
+      linkText: '교보문고 정식 도서 구매상세',
+      subLink: 'https://www.yes24.com/Product/Search?domain=ALL&query=%EB%AA%A8%EB%91%90%EC%9D%98%20%EC%8B%9D%ED%83%81%20%EC%9D%B4%EA%B2%BD%EC%88%99',
+      subLinkText: '예스24 검색',
       tag: '정식 출간 도서',
       icon: BookOpen
     },
@@ -124,7 +139,7 @@ export default function PortfolioShowcaseSection() {
       category: '전자책 & 오디오북 & 컬러링북',
       desc: '생성형 AI로 구현한 고품격 삽화와 오디오 더빙, 컬러링북이 결합된 멀티미디어 융합 콘텐츠.',
       link: 'https://mybestedu.ai/gallery/k97f9vtdtjfz00en3jdwdnr8yh7fds8a?version=1746523894317',
-      linkText: '오디오북 갤러리 감상하기',
+      linkText: '마이베스트에듀 갤러리 감상',
       tag: '오디오북 & 전자책',
       icon: Sparkles
     },
@@ -134,8 +149,8 @@ export default function PortfolioShowcaseSection() {
       title: '뮤직비디오 <0과 1 사이>',
       category: 'AI가수 zero & one (혼성)',
       desc: 'AI 작곡과 디지털 휴먼 보컬, 3D 영상 생성을 결합한 감성 AI 미디어아트 대표 창작물.',
-      link: 'https://www.youtube.com/@%EC%A3%BC%EB%94%94AI%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4',
-      linkText: '유튜브 채널에서 뮤비 감상',
+      link: 'https://www.youtube.com/hashtag/%EB%AE%A4%EB%B9%84_0%EA%B3%BC1%EC%82%AC%EC%9D%B4',
+      linkText: '유튜브 본영상 해시태그 보기',
       tag: 'AI 뮤직비디오',
       icon: Music
     },
@@ -146,7 +161,7 @@ export default function PortfolioShowcaseSection() {
       category: '노코드 & AI 앱 제작',
       desc: '여행자가 가고 싶은 나라의 실시간 기상 정보와 여행 가이드를 제공하는 감성 인터랙티브 웹 프로젝트.',
       link: 'https://closed-cheer-98309856.figma.site/',
-      linkText: '날씨 웹앱 직접 체험하기',
+      linkText: '피그마 사이트 직접 체험하기',
       tag: 'AI 웹 인터랙션',
       icon: Globe
     }
@@ -405,16 +420,28 @@ export default function PortfolioShowcaseSection() {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-700/60">
+                  <div className="pt-4 border-t border-slate-700/60 flex flex-wrap items-center gap-2.5">
                     <a
                       href={proj.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-bold text-blue-400 hover:text-blue-300 group-hover:underline"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 text-xs font-bold border border-blue-500/40 transition-all hover:scale-105"
                     >
                       <span>{proj.linkText}</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 opacity-80" />
                     </a>
+
+                    {proj.subLink && (
+                      <a
+                        href={proj.subLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 text-xs font-bold border border-emerald-500/40 transition-all hover:scale-105"
+                      >
+                        <span>{proj.subLinkText}</span>
+                        <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                      </a>
+                    )}
                   </div>
                 </div>
               );
